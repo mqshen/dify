@@ -92,6 +92,11 @@ export const BLOCKS: Block[] = [
   },
   {
     classification: BlockClassificationEnum.Utilities,
+    type: BlockEnum.Report,
+    title: 'Report',
+  },
+  {
+    classification: BlockClassificationEnum.Utilities,
     type: BlockEnum.ListFilter,
     title: 'List Filter',
   },

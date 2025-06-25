@@ -33,6 +33,7 @@ export enum BlockEnum {
   Tool = 'tool',
   ParameterExtractor = 'parameter-extractor',
   Iteration = 'iteration',
+  Report = 'report',
   DocExtractor = 'document-extractor',
   ListFilter = 'list-operator',
   IterationStart = 'iteration-start',

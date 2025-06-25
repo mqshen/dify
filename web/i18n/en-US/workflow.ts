@@ -242,6 +242,7 @@ const translation = {
     'template-transform': 'Template',
     'http-request': 'HTTP Request',
     'variable-assigner': 'Variable Aggregator',
+    'report': 'Report',
     'variable-aggregator': 'Variable Aggregator',
     'assigner': 'Variable Assigner',
     'iteration-start': 'Iteration Start',

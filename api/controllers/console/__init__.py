@@ -86,6 +86,11 @@ from .datasets import (
     website,
 )
 
+# Import documents controllers
+from .documents import (
+    documents,
+)
+
 # Import explore controllers
 from .explore import (
     installed_app,

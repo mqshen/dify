@@ -20,6 +20,7 @@ import DocExtractorDefault from './nodes/document-extractor/default'
 import ListFilterDefault from './nodes/list-operator/default'
 import IterationStartDefault from './nodes/iteration-start/default'
 import AgentDefault from './nodes/agent/default'
+import ReportDefault from './nodes/report/default'
 import LoopStartDefault from './nodes/loop-start/default'
 import LoopEndDefault from './nodes/loop-end/default'
 
@@ -242,6 +243,15 @@ export const NODES_EXTRA_DATA: Record<BlockEnum, NodesExtraData> = {
     getAvailableNextNodes: ListFilterDefault.getAvailableNextNodes,
     checkValid: AgentDefault.checkValid,
   },
+  [BlockEnum.Report]: {
+    author: 'Belink',
+    about: '',
+    availablePrevNodes: [],
+    availableNextNodes: [],
+    getAvailablePrevNodes: ListFilterDefault.getAvailablePrevNodes,
+    getAvailableNextNodes: ListFilterDefault.getAvailableNextNodes,
+    checkValid: ReportDefault.checkValid,
+  },
 }
 
 export const NODES_INITIAL_DATA = {
@@ -400,6 +410,14 @@ export const NODES_INITIAL_DATA = {
     title: '',
     desc: '',
     ...AgentDefault.defaultValue,
+  },
+  [BlockEnum.Report]: {
+    type: BlockEnum.Report,
+    title: '',
+    desc: '',
+    document_ids: [],
+    variables: [],
+    ...ReportDefault.defaultValue,
   },
 }
 export const MAX_ITERATION_PARALLEL_NUM = 10
