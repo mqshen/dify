@@ -5,11 +5,11 @@ from .engine import db
 from .types import StringUUID
 
 
-class Document(Base):
-    __tablename__ = "belink_document"
+class Report(Base):
+    __tablename__ = "report"
     __table_args__ = (
-        db.PrimaryKeyConstraint("id", name="belink_document_pkey"),
-        db.Index("belink_document_tenant_idx", "tenant_id"),
+        db.PrimaryKeyConstraint("id", name="report_pkey"),
+        db.Index("report_tenant_idx", "tenant_id"),
     )
 
     id = db.Column(StringUUID, server_default=db.text("uuid_generate_v4()"))

@@ -26,6 +26,9 @@ from .dataset import (
     TidbAuthBinding,
     Whitelist,
 )
+from .report import (
+    Report
+)
 from .engine import db
 from .enums import CreatorUserRole, UserFrom, WorkflowRunTriggeredFrom
 from .model import (
@@ -175,5 +178,6 @@ __all__ = [
     "WorkflowRunTriggeredFrom",
     "WorkflowToolProvider",
     "WorkflowType",
+    "Report",
     "db",
 ]

@@ -86,9 +86,9 @@ from .datasets import (
     website,
 )
 
-# Import documents controllers
-from .documents import (
-    documents,
+# Import reports controllers
+from .reports import (
+    reports,
 )
 
 # Import explore controllers

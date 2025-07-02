@@ -5,7 +5,7 @@ from werkzeug.exceptions import Forbidden
 
 import services
 from controllers.console import api
-from controllers.console.documents.error import DocumentNameDuplicateError
+from controllers.console.reports.error import DocumentNameDuplicateError
 from controllers.console.wraps import (
     account_initialization_required,
     cloud_edition_billing_rate_limit_check,
@@ -13,7 +13,7 @@ from controllers.console.wraps import (
 )
 from fields.belink_document_fields import belink_document_detail_fields
 from libs.login import login_required
-from services.document_service import DocumentService
+from services.report_service import ReportService
 
 
 def _validate_name(name):
@@ -21,7 +21,7 @@ def _validate_name(name):
         raise ValueError("Name must be between 1 to 40 characters.")
     return name
 
-class DocumentListApi(Resource):
+class ReportListApi(Resource):
     @setup_required
     @login_required
     @account_initialization_required
@@ -34,9 +34,9 @@ class DocumentListApi(Resource):
         tag_ids = request.args.getlist("tag_ids")
         include_all = request.args.get("include_all", default="false").lower() == "true"
         if ids:
-            datasets, total = DocumentService.get_documents_by_ids(ids, current_user.current_tenant_id)
+            datasets, total = ReportService.get_reports_by_ids(ids, current_user.current_tenant_id)
         else:
-            datasets, total = DocumentService.get_documents(
+            datasets, total = ReportService.get_reports(
                 page, limit, current_user.current_tenant_id, current_user, search, tag_ids, include_all
             )
 
@@ -72,7 +72,7 @@ class DocumentListApi(Resource):
             raise Forbidden()
 
         try:
-            dataset = DocumentService.create_empty_document(
+            report = ReportService.create_empty_report(
                 tenant_id=current_user.current_tenant_id,
                 name=args["name"],
                 content=args["content"],
@@ -81,6 +81,19 @@ class DocumentListApi(Resource):
         except services.errors.document.DocumentNameDuplicateError:
             raise DocumentNameDuplicateError()
 
-        return marshal(dataset, belink_document_detail_fields), 201
+        return marshal(report, belink_document_detail_fields), 201
 
-api.add_resource(DocumentListApi, "/documents")
+class ReportTemplateApi(Resource):
+    @setup_required
+    @login_required
+    @account_initialization_required
+    def get(self):
+        response = {"data": {
+                "version_key": "111",
+                "url": ""
+            }
+        }
+        return response, 200
+
+api.add_resource(ReportListApi, "/reports")
+api.add_resource(ReportTemplateApi, "/reports/template")
