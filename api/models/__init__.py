@@ -26,9 +26,6 @@ from .dataset import (
     TidbAuthBinding,
     Whitelist,
 )
-from .report import (
-    Report
-)
 from .engine import db
 from .enums import CreatorUserRole, UserFrom, WorkflowRunTriggeredFrom
 from .model import (
@@ -70,6 +67,7 @@ from .provider import (
     TenantDefaultModel,
     TenantPreferredModelProvider,
 )
+from .report import Report
 from .source import DataSourceApiKeyAuthBinding, DataSourceOauthBinding
 from .task import CeleryTask, CeleryTaskSet
 from .tools import (
@@ -150,6 +148,7 @@ __all__ = [
     "ProviderQuotaType",
     "ProviderType",
     "RecommendedApp",
+    "Report",
     "SavedMessage",
     "Site",
     "Tag",
@@ -178,6 +177,5 @@ __all__ = [
     "WorkflowRunTriggeredFrom",
     "WorkflowToolProvider",
     "WorkflowType",
-    "Report",
     "db",
 ]

@@ -86,17 +86,17 @@ from .datasets import (
     website,
 )
 
-# Import reports controllers
-from .reports import (
-    reports,
-)
-
 # Import explore controllers
 from .explore import (
     installed_app,
     parameter,
     recommended_app,
     saved_message,
+)
+
+# Import reports controllers
+from .reports import (
+    reports,
 )
 
 # Explore Audio
