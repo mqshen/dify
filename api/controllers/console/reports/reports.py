@@ -1,3 +1,4 @@
+import requests
 from flask import request
 from flask_login import current_user
 from flask_restful import Resource, marshal, reqparse
@@ -11,6 +12,7 @@ from controllers.console.wraps import (
     cloud_edition_billing_rate_limit_check,
     setup_required,
 )
+from extensions.ext_storage import storage
 from fields.belink_document_fields import belink_document_detail_fields
 from libs.login import login_required
 from services.report_service import ReportService
@@ -95,5 +97,37 @@ class ReportTemplateApi(Resource):
         }
         return response, 200
 
+class ReportCallbackApi(Resource):
+
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument("status", type=int, required=True, location="json")
+        parser.add_argument("url", type=str, required=True, location="json")
+        parser.add_argument("key", type=str, default="text_model", required=False, nullable=False, location="json")
+        parser.add_argument("dataset_id", type=str, required=False, nullable=False, location="json")
+        parser.add_argument(
+            "doc_language", type=str, default="English", required=False, nullable=False, location="json"
+        )
+        args = parser.parse_args()
+
+        status = args['status']
+        file_url = args['url']
+        key = args['key']
+        if status not in {2, 6}:
+            # 非保存回调不处理
+            return {'error': 0}
+        file = requests.get(url=file_url)
+        version_key = key.split('_', 1)[0]
+
+        object_name = f"workflow/report/{version_key}.docx"
+
+        storage.save(object_name, file._content)
+
+        # minio_client.upload_minio_data(
+        #     object_name, file._content, len(file._content),
+        #     'application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+        return {'error': 0}
+
 api.add_resource(ReportListApi, "/reports")
 api.add_resource(ReportTemplateApi, "/reports/template")
+api.add_resource(ReportCallbackApi, "/reports/callback")
