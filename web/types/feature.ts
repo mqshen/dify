@@ -103,6 +103,7 @@ export enum DatasetAttr {
   DATA_PUBLIC_API_PREFIX = 'data-public-api-prefix',
   DATA_MARKETPLACE_API_PREFIX = 'data-marketplace-api-prefix',
   DATA_MARKETPLACE_URL_PREFIX = 'data-marketplace-url-prefix',
+  DATA_REPORT_URL_PREFIX = 'data-report-url-prefix',
   DATA_PUBLIC_EDITION = 'data-public-edition',
   DATA_PUBLIC_SUPPORT_MAIL_LOGIN = 'data-public-support-mail-login',
   DATA_PUBLIC_SENTRY_DSN = 'data-public-sentry-dsn',

@@ -13,7 +13,7 @@ from controllers.console.wraps import (
     setup_required,
 )
 from extensions.ext_storage import storage
-from fields.belink_document_fields import belink_document_detail_fields
+from fields.belink_report_fields import belink_report_detail_fields
 from libs.login import login_required
 from services.report_service import ReportService
 
@@ -42,7 +42,7 @@ class ReportListApi(Resource):
                 page, limit, current_user.current_tenant_id, current_user, search, tag_ids, include_all
             )
 
-        data = marshal(datasets, belink_document_detail_fields)
+        data = marshal(datasets, belink_report_detail_fields)
 
         response = {"data": data, "has_more": len(datasets) == limit, "limit": limit, "total": total, "page": page}
         return response, 200
@@ -83,7 +83,16 @@ class ReportListApi(Resource):
         except services.errors.document.DocumentNameDuplicateError:
             raise DocumentNameDuplicateError()
 
-        return marshal(report, belink_document_detail_fields), 201
+        return marshal(report, belink_report_detail_fields), 201
+
+class ReportApi(Resource):
+    @setup_required
+    @login_required
+    @account_initialization_required
+    def get(self, report_id):
+        report_id_str = str(report_id)
+        report = ReportService.get_report(report_id_str)
+        return marshal(report, belink_report_detail_fields), 200
 
 class ReportTemplateApi(Resource):
     @setup_required
@@ -102,32 +111,44 @@ class ReportCallbackApi(Resource):
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument("status", type=int, required=True, location="json")
-        parser.add_argument("url", type=str, required=True, location="json")
-        parser.add_argument("key", type=str, default="text_model", required=False, nullable=False, location="json")
+        parser.add_argument("url", type=str, required=False, nullable=True, location="json")
+        parser.add_argument("key", type=str, required=False, nullable=False, location="json")
+        parser.add_argument("tenant_id", type=str, required=False, nullable=False, location="json")
         parser.add_argument("dataset_id", type=str, required=False, nullable=False, location="json")
         parser.add_argument(
             "doc_language", type=str, default="English", required=False, nullable=False, location="json"
         )
         args = parser.parse_args()
+        print(f"got args {args}")
 
         status = args['status']
-        file_url = args['url']
-        key = args['key']
         if status not in {2, 6}:
             # 非保存回调不处理
             return {'error': 0}
+        file_url = args['url']
+        key = args['key']
         file = requests.get(url=file_url)
         version_key = key.split('_', 1)[0]
 
         object_name = f"workflow/report/{version_key}.docx"
 
-        storage.save(object_name, file._content)
+        print("start upload file")
+        try:
+            storage.save(object_name, file._content)
+        except Exception as e:
+            print(f"Unexpected error occurred while upload file to storage {e}")
 
-        # minio_client.upload_minio_data(
-        #     object_name, file._content, len(file._content),
-        #     'application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+        ReportService.create_empty_report(
+            # tenant_id=args["tenant_id"],
+            tenant_id="5275e976-348c-4a0e-9446-91302537f515",
+            user_id="1aafaffa-b595-4457-97c6-e0d5b801293b",
+            name=key,
+            url=object_name,
+        )
+
         return {'error': 0}
 
 api.add_resource(ReportListApi, "/reports")
+api.add_resource(ReportApi, "/reports/<uuid:report_id>")
 api.add_resource(ReportTemplateApi, "/reports/template")
 api.add_resource(ReportCallbackApi, "/reports/callback")

@@ -5,21 +5,21 @@ import useSWRInfinite from 'swr/infinite'
 import { debounce } from 'lodash-es'
 import NewReportCard from './NewReportCard'
 import ReportCard from './ReportCard'
-import type { DataSetListResponse, FetchDatasetsParams } from '@/models/datasets'
+import type { ReportListResponse, FetchReportsParams } from '@/models/reports'
 import { fetchDatasets } from '@/service/datasets'
 import { useAppContext } from '@/context/app-context'
 import { useTranslation } from 'react-i18next'
 
 const getKey = (
   pageIndex: number,
-  previousPageData: DataSetListResponse,
+  previousPageData: ReportListResponse,
   tags: string[],
   keyword: string,
   includeAll: boolean,
 ) => {
   if (!pageIndex || previousPageData.has_more) {
-    const params: FetchDatasetsParams = {
-      url: 'datasets',
+    const params: FetchReportsParams = {
+      url: 'reports',
       params: {
         page: pageIndex + 1,
         limit: 30,
@@ -51,7 +51,7 @@ const Datasets = ({
   const { t } = useTranslation()
   const { isCurrentWorkspaceEditor } = useAppContext()
   const { data, isLoading, setSize, mutate } = useSWRInfinite(
-    (pageIndex: number, previousPageData: DataSetListResponse) => getKey(pageIndex, previousPageData, tags, keywords, includeAll),
+    (pageIndex: number, previousPageData: ReportListResponse) => getKey(pageIndex, previousPageData, tags, keywords, includeAll),
     fetchDatasets,
     { revalidateFirstPage: false, revalidateAll: true },
   )
@@ -86,8 +86,8 @@ const Datasets = ({
   return (
     <nav className='grid shrink-0 grow grid-cols-1 content-start gap-4 px-12 pt-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
       {isCurrentWorkspaceEditor && <NewReportCard ref={anchorRef} />}
-      {data?.map(({ data: datasets }) => datasets.map(dataset => (
-        <ReportCard key={dataset.id} dataset={dataset} onSuccess={mutate} />),
+      {data?.map(({ data: reports }) => reports.map(report => (
+        <ReportCard key={report.id} report={report} onSuccess={mutate} />),
       ))}
     </nav>
   )

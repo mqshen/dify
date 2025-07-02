@@ -19,7 +19,7 @@ export default function DatasetsLayout({ children }: { children: React.ReactNode
   if (isLoadingCurrentWorkspace || !(isCurrentWorkspaceEditor || isCurrentWorkspaceDatasetOperator))
     return <Loading type='app' />
   return (
-    <div>
+    <div className='size-full'>
       {children}
     </div>
   )

@@ -2,13 +2,15 @@ import i18next from "i18next"
 import { useEffect, useContext } from "react"
 import { useToastContext } from '@/app/components/base/toast'
 import { basePath } from '@/utils/var'
+import { API_PREFIX, REPORT_URL_PREFIX } from '@/config'
 
 export default function Word({ data, workflow }) {
 
     // console.log('wordUrl :>> ', wordUrl, data);
     // 本地调试
     // const host = 'http://192.168.106.120:3002'
-    const backUrl = `${basePath}/api/v1/workflow/report/callback`
+    // const backUrl = `${basePath}/console/api/reports/callback`
+    const backUrl = `${API_PREFIX}/reports/callback`
 
     const editorConfig = {
         // 编辑器宽度
@@ -56,11 +58,11 @@ export default function Word({ data, workflow }) {
                 rightMenu: true,
                 unit: "cm",
                 uiTheme: "theme-dark",
-                logo: {
-                    "image": basePath + "/logo.jpeg",
-                    "imageDark": basePath + "/logo.jpeg",
-                    "url": "https://example.com"
-                }
+                // logo: {
+                //     "image": basePath + "/logo.jpeg",
+                //     "imageDark": basePath + "/logo.jpeg",
+                //     "url": "https://example.com"
+                // }
             },
             plugins: {
                 autostart: ['asc.{D2A0F3BE-CC8D-4956-BCD9-6CBEA6E8960E}']
@@ -79,20 +81,19 @@ export default function Word({ data, workflow }) {
         window.editor = new window.DocsAPI.DocEditor('bsoffice', editorConfig)
     }
 
-    const { toast } = useToast()
+    const { notify } = useToastContext()
     useEffect(() => {
         if (window.DocsAPI) {
             createEditor()
         } else {
             const script = document.createElement('script')
-            script.src = wordUrl + '/web-apps/apps/api/documents/api.js' // 在线编辑服务
+            script.src = REPORT_URL_PREFIX + '/web-apps/apps/api/documents/api.js' // 在线编辑服务
             script.onload = createEditor
             document.head.appendChild(script)
             script.onerror = () => {
-                toast({
-                    variant: 'error',
-                    title: 'word编辑器加载失败',
-                    description: '请检查Office服务地址配置是否正确并正常启动.'
+                notify({
+                    type: 'error',
+                    message: 'word编辑器加载失败, 请检查Office服务地址配置是否正确并正常启动.',
                 })
             }
         }

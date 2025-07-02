@@ -37,6 +37,8 @@ export const PUBLIC_API_PREFIX = getStringConfig(process.env.NEXT_PUBLIC_PUBLIC_
 export const MARKETPLACE_API_PREFIX = getStringConfig(process.env.NEXT_PUBLIC_MARKETPLACE_API_PREFIX, DatasetAttr.DATA_MARKETPLACE_API_PREFIX, 'http://localhost:5002/api')
 export const MARKETPLACE_URL_PREFIX = getStringConfig(process.env.NEXT_PUBLIC_MARKETPLACE_URL_PREFIX, DatasetAttr.DATA_MARKETPLACE_URL_PREFIX, '')
 
+export const REPORT_URL_PREFIX = getStringConfig(process.env.NEXT_PUBLIC_REPORT_URL_PREFIX, DatasetAttr.DATA_REPORT_URL_PREFIX, '')
+
 const EDITION = getStringConfig(process.env.NEXT_PUBLIC_EDITION, DatasetAttr.DATA_PUBLIC_EDITION, 'SELF_HOSTED')
 
 export const IS_CE_EDITION = EDITION === 'SELF_HOSTED'

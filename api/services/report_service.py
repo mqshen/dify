@@ -1,3 +1,4 @@
+from typing import Optional
 
 from sqlalchemy import select
 
@@ -27,3 +28,18 @@ class ReportService:
         reports = db.paginate(select=stmt, page=1, per_page=len(ids), max_per_page=len(ids), error_out=False)
 
         return reports.items, reports.total
+
+    @classmethod
+    def create_empty_report(cls, tenant_id, user_id, name, url):
+        report = Report(name=name)
+        report.url = url
+        report.created_by = user_id
+        report.updated_by = user_id
+        report.tenant_id = tenant_id
+        db.session.add(report)
+        db.session.commit()
+
+    @classmethod
+    def get_report(cls, report_id) -> Optional[Report]:
+        report: Optional[Report] = db.session.query(Report).filter_by(id=report_id).first()
+        return report

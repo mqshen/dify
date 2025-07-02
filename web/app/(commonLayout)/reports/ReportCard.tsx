@@ -9,25 +9,20 @@ import cn from '@/utils/classnames'
 import Confirm from '@/app/components/base/confirm'
 import { ToastContext } from '@/app/components/base/toast'
 import { checkIsUsedInApp, deleteDataset } from '@/service/datasets'
-import type { DataSet } from '@/models/datasets'
-import Tooltip from '@/app/components/base/tooltip'
+import type { Report } from '@/models/reports'
 import { Folder } from '@/app/components/base/icons/src/vender/solid/files'
 import type { HtmlContentProps } from '@/app/components/base/popover'
 import CustomPopover from '@/app/components/base/popover'
 import Divider from '@/app/components/base/divider'
-import RenameDatasetModal from '@/app/components/datasets/rename-modal'
-import type { Tag } from '@/app/components/base/tag-management/constant'
-import TagSelector from '@/app/components/base/tag-management/selector'
-import CornerLabel from '@/app/components/base/corner-label'
 import { useAppContext } from '@/context/app-context'
 
 export type ReportCardProps = {
-  dataset: DataSet
+  report: Report
   onSuccess?: () => void
 }
 
 const ReportCard = ({
-  dataset,
+  report,
   onSuccess,
 }: ReportCardProps) => {
   const { t } = useTranslation()
@@ -35,14 +30,13 @@ const ReportCard = ({
   const { push } = useRouter()
 
   const { isCurrentWorkspaceDatasetOperator } = useAppContext()
-  const [tags, setTags] = useState<Tag[]>(dataset.tags)
 
   const [showRenameModal, setShowRenameModal] = useState(false)
   const [showConfirmDelete, setShowConfirmDelete] = useState(false)
   const [confirmMessage, setConfirmMessage] = useState<string>('')
   const detectIsUsedByApp = useCallback(async () => {
     try {
-      const { is_using: isUsedByApp } = await checkIsUsedInApp(dataset.id)
+      const { is_using: isUsedByApp } = await checkIsUsedInApp(report.id)
       setConfirmMessage(isUsedByApp ? t('report.datasetUsedByApp')! : t('report.deleteDatasetConfirmContent')!)
     }
     catch (e: any) {
@@ -51,10 +45,10 @@ const ReportCard = ({
     }
 
     setShowConfirmDelete(true)
-  }, [dataset.id, notify, t])
+  }, [report.id, notify, t])
   const onConfirmDelete = useCallback(async () => {
     try {
-      await deleteDataset(dataset.id)
+      await deleteDataset(report.id)
       notify({ type: 'success', message: t('report.datasetDeleted') })
       if (onSuccess)
         onSuccess()
@@ -62,7 +56,7 @@ const ReportCard = ({
     catch {
     }
     setShowConfirmDelete(false)
-  }, [dataset.id, notify, onSuccess, t])
+  }, [report.id, notify, onSuccess, t])
 
   const Operations = (props: HtmlContentProps & { showDelete: boolean }) => {
     const onMouseLeave = async () => {
@@ -102,90 +96,37 @@ const ReportCard = ({
     )
   }
 
-  useEffect(() => {
-    setTags(dataset.tags)
-  }, [dataset])
-
   return (
     <>
       <div
         className='group relative col-span-1 flex min-h-[171px] cursor-pointer flex-col rounded-xl border-[0.5px] border-solid border-components-card-border bg-components-card-bg shadow-sm transition-all duration-200 ease-in-out hover:shadow-lg'
         data-disable-nprogress={true}
         onClick={(e) => {
-            push(`/datasets/${dataset.id}/documents`)
+            push(`/reports/${report.id}`)
         }}
       >
         <div className='flex h-[66px] shrink-0 grow-0 items-center gap-3 px-[14px] pb-3 pt-[14px]'>
           <div className={cn(
             'flex shrink-0 items-center justify-center rounded-md border-[0.5px] border-[#E0EAFF] bg-[#F5F8FF] p-2.5',
-            !dataset.embedding_available && 'opacity-50 hover:opacity-100',
           )}>
             <Folder className='h-5 w-5 text-[#444CE7]' />
           </div>
           <div className='w-0 grow py-[1px]'>
             <div className='flex items-center text-sm font-semibold leading-5 text-text-secondary'>
-              <div className={cn('truncate', !dataset.embedding_available && 'text-text-tertiary opacity-50 hover:opacity-100')} title={dataset.name}>{dataset.name}</div>
-              {!dataset.embedding_available && (
-                <Tooltip
-                  popupContent={t('report.unavailableTip')}
-                >
-                  <span className='ml-1 inline-flex w-max shrink-0 rounded-md border border-divider-regular px-1 text-xs font-normal leading-[18px] text-text-tertiary'>{t('report.unavailable')}</span>
-                </Tooltip>
-              )}
+              <div className={cn('truncate')} title={report.name}>{report.name}</div>
             </div>
             <div className='mt-[1px] flex items-center text-xs leading-[18px] text-text-tertiary'>
               <div
-                className={cn('truncate', (!dataset.embedding_available || !dataset.document_count) && 'opacity-50')}
-                title={dataset.provider === 'external' ? `${dataset.app_count}${t('report.appCount')}` : `${dataset.document_count}${t('report.documentCount')} · ${Math.round(dataset.word_count / 1000)}${t('report.wordCount')} · ${dataset.app_count}${t('report.appCount')}`}
+                className={cn('truncate', 'opacity-50')}
               >
-                {dataset.provider === 'external'
-                  ? <>
-                    <span>{dataset.app_count}{t('report.appCount')}</span>
-                  </>
-                  : <>
-                    <span>{dataset.document_count}{t('report.documentCount')}</span>
-                    <span className='mx-0.5 w-1 shrink-0 text-text-tertiary'>·</span>
-                    <span>{Math.round(dataset.word_count / 1000)}{t('report.wordCount')}</span>
-                    <span className='mx-0.5 w-1 shrink-0 text-text-tertiary'>·</span>
-                    <span>{dataset.app_count}{t('report.appCount')}</span>
-                  </>
-                }
               </div>
             </div>
           </div>
         </div>
-        <div
-          className={cn(
-            'mb-2 max-h-[72px] grow px-[14px] text-xs leading-normal text-text-tertiary group-hover:line-clamp-2 group-hover:max-h-[36px]',
-            tags.length ? 'line-clamp-2' : 'line-clamp-4',
-            !dataset.embedding_available && 'opacity-50 hover:opacity-100',
-          )}
-          title={dataset.description}>
-          {dataset.description}
-        </div>
         <div className={cn(
           'mt-4 h-[42px] shrink-0 items-center pb-[6px] pl-[14px] pr-[6px] pt-1',
-          tags.length ? 'flex' : '!hidden group-hover:!flex',
+          '!hidden group-hover:!flex',
         )}>
-          <div className={cn('flex w-0 grow items-center gap-1', !dataset.embedding_available && 'opacity-50 hover:opacity-100')} onClick={(e) => {
-            e.stopPropagation()
-            e.preventDefault()
-          }}>
-            <div className={cn(
-              'mr-[41px] w-full grow group-hover:!mr-0 group-hover:!block',
-              tags.length ? '!block' : '!hidden',
-            )}>
-              <TagSelector
-                position='bl'
-                type='knowledge'
-                targetID={dataset.id}
-                value={tags.map(tag => tag.id)}
-                selectedTags={tags}
-                onCacheUpdate={setTags}
-                onChange={onSuccess}
-              />
-            </div>
-          </div>
           <div className='mx-1 !hidden h-[14px] w-[1px] shrink-0 bg-divider-regular group-hover:!flex' />
           <div className='!hidden shrink-0 group-hover:!flex'>
             <CustomPopover
@@ -210,14 +151,6 @@ const ReportCard = ({
           </div>
         </div>
       </div>
-      {showRenameModal && (
-        <RenameDatasetModal
-          show={showRenameModal}
-          dataset={dataset}
-          onClose={() => setShowRenameModal(false)}
-          onSuccess={onSuccess}
-        />
-      )}
       {showConfirmDelete && (
         <Confirm
           title={t('report.deleteDatasetConfirmTitle')}
