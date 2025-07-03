@@ -85,3 +85,7 @@ class AwsS3Storage(BaseStorage):
 
     def delete(self, filename):
         self.client.delete_object(Bucket=self.bucket_name, Key=filename)
+
+
+    def get_url(self, path):
+        return f"{dify_config.S3_ENDPOINT}/{dify_config.S3_BUCKET_NAME}/{path}"

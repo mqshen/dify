@@ -105,6 +105,8 @@ class Storage:
     def scan(self, path: str, files: bool = True, directories: bool = False) -> list[str]:
         return self.storage_runner.scan(path, files=files, directories=directories)
 
+    def get_url(self, path: str):
+        return self.storage_runner.get_url(path)
 
 storage = Storage()
 

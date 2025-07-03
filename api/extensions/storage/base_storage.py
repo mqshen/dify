@@ -38,3 +38,6 @@ class BaseStorage(ABC):
         If a storage backend doesn't support scanning, it will raise NotImplementedError.
         """
         raise NotImplementedError("This storage backend doesn't support scanning")
+
+    def get_url(self, path):
+        raise NotImplementedError

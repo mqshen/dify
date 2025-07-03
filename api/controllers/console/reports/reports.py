@@ -92,7 +92,11 @@ class ReportApi(Resource):
     def get(self, report_id):
         report_id_str = str(report_id)
         report = ReportService.get_report(report_id_str)
-        return marshal(report, belink_report_detail_fields), 200
+        return {
+            "id": report.id,
+            "name": report.name,
+            "url": storage.get_url(report.url),
+        }, 200
 
 class ReportTemplateApi(Resource):
     @setup_required
