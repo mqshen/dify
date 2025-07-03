@@ -19,7 +19,6 @@ import { basePath } from "@/utils/var";
 type ReportEditProps = {
   reportId?: string;
   nodeId?: string;
-  onChange?: (version: string) => void;
 };
 
 // import SelectVar from "./SelectVar"
@@ -27,13 +26,11 @@ type ReportEditProps = {
 export default function ReportWordEdit({
   reportId,
   nodeId,
-  onChange,
 }: ReportEditProps) {
   const { t } = useTranslation();
 
   const { docx, loading, pageLoading, createDocx, importDocx } = useReport(
     reportId,
-    onChange
   );
 
   // inset var
@@ -126,7 +123,7 @@ export default function ReportWordEdit({
   );
 }
 
-const useReport = (reportId?: string, onchange?: (version: string) => void) => {
+const useReport = (reportId?: string) => {
   const [loading, setLoading] = useState(false);
   const [pageLoading, setPageLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
@@ -146,6 +143,7 @@ const useReport = (reportId?: string, onchange?: (version: string) => void) => {
               key: reportId,
               path: detail.url,
             });
+            setPageLoading(false);
           } catch {
             setHasError(true);
           }
@@ -160,7 +158,6 @@ const useReport = (reportId?: string, onchange?: (version: string) => void) => {
         });
         console.warn("REPORT:读取报告所用KEY是 :>> ", reportId);
         console.warn("REPORT:读取报告所后变更KEY是 :>> ", res.version_key);
-        onchange?.(res.version_key);
       });
     }
   }, [reportId]);

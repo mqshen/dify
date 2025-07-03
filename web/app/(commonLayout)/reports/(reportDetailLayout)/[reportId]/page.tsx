@@ -1,24 +1,20 @@
 
-"use client"
-
 import React, { useState } from 'react'
 import ReportUpdateForm from '@/app/components/reports/create'
 
 type Props = {
-  params: { reportId: string }
+  params: Promise<{ reportId: string }>
 }
 
-const ReportDetail = (props: Props) => {
-  const params = props.params
+const ReportDetail = async (props: Props) => {
+  const params = await props.params
 
   const { reportId } = params
 
 
   const nodeId = ""
-  const handleChange = (key: string) => {
-  };
   return (
-    <ReportUpdateForm reportId={reportId} nodeId={nodeId} onChange={handleChange} />
+    <ReportUpdateForm reportId={reportId} nodeId={nodeId} />
   )
 }
 
