@@ -7,31 +7,31 @@ import Link from 'next/link'
 import produce from 'immer'
 import TypeIcon from '../type-icon'
 import Modal from '@/app/components/base/modal'
-import type { Document } from '@/models/documents'
+import type { Report } from '@/models/reports'
 import Button from '@/app/components/base/button'
-import { fetchDocuments } from '@/service/documents'
+import { fetchReports } from '@/service/reports'
 import Loading from '@/app/components/base/loading'
 import cn from '@/utils/classnames'
 import { basePath } from '@/utils/var'
 
-export type ISelectDocumentProps = {
+export type ISelectReportProps = {
   isShow: boolean
   onClose: () => void
   selectedIds: string[]
-  onSelect: (document: Document[]) => void
+  onSelect: (document: Report[]) => void
 }
 
-const SelectDataSet: FC<ISelectDocumentProps> = ({
+const SelectReport: FC<ISelectReportProps> = ({
   isShow,
   onClose,
   selectedIds,
   onSelect,
 }) => {
   const { t } = useTranslation()
-  const [selected, setSelected] = React.useState<Document[]>(selectedIds.map(id => ({ id }) as any))
+  const [selected, setSelected] = React.useState<Report[]>(selectedIds.map(id => ({ id }) as any))
   const [loaded, setLoaded] = React.useState(false)
-  const [documents, setDocuments] = React.useState<Document[] | null>(null)
-  const hasNoData = !documents || documents?.length === 0
+  const [reports, setReports] = React.useState<Report[] | null>(null)
+  const hasNoData = !reports || reports?.length === 0
   const canSelectMulti = true
 
   const listRef = useRef<HTMLDivElement>(null)
@@ -41,11 +41,11 @@ const SelectDataSet: FC<ISelectDocumentProps> = ({
   useInfiniteScroll(
     async () => {
       if (!isNoMore) {
-        const { data, has_more } = await fetchDocuments({ url: '/documents', params: { page } })
+        const { data, has_more } = await fetchReports({ url: '/reports', params: { page } })
         setPage(getPage() + 1)
         setIsNoMore(!has_more)
-        const newList = [...(documents || []), ...data]// .filter(item => item.indexing_technique || item.provider === 'external')]
-        setDocuments(newList)
+        const newList = [...(reports || []), ...data]// .filter(item => item.indexing_technique || item.provider === 'external')]
+        setReports(newList)
         setLoaded(true)
         if (!selected.find(item => !item.name))
           return { list: [] }
@@ -72,16 +72,16 @@ const SelectDataSet: FC<ISelectDocumentProps> = ({
     },
   )
 
-  const toggleSelect = (document: Document) => {
-    const isSelected = selected.some(item => item.id === document.id)
+  const toggleSelect = (report: Report) => {
+    const isSelected = selected.some(item => item.id === report.id)
     if (isSelected) {
-      setSelected(selected.filter(item => item.id !== document.id))
+      setSelected(selected.filter(item => item.id !== report.id))
     }
     else {
       if (canSelectMulti)
-        setSelected([...selected, document])
+        setSelected([...selected, report])
       else
-        setSelected([document])
+        setSelected([report])
     }
   }
 
@@ -113,10 +113,10 @@ const SelectDataSet: FC<ISelectDocumentProps> = ({
         </div>
       )}
 
-      {documents && documents?.length > 0 && (
+      {reports && reports?.length > 0 && (
         <>
           <div ref={listRef} className='mt-7 max-h-[286px] space-y-1 overflow-y-auto'>
-            {documents.map(item => (
+            {reports.map(item => (
               <div
                 key={item.id}
                 className={cn(
@@ -152,4 +152,4 @@ const SelectDataSet: FC<ISelectDocumentProps> = ({
     </Modal>
   )
 }
-export default React.memo(SelectDataSet)
+export default React.memo(SelectReport)

@@ -415,7 +415,7 @@ export const NODES_INITIAL_DATA = {
     type: BlockEnum.Report,
     title: '',
     desc: '',
-    document_ids: [],
+    report_ids: [],
     variables: [],
     ...ReportDefault.defaultValue,
   },

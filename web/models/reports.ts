@@ -30,3 +30,15 @@ export type FetchReportsParams = {
     keyword?: string
   }
 }
+
+
+export type FetchReportParams = {
+  url: string
+  params: {
+    page: number
+    ids?: string[]
+    limit?: number
+    include_all?: boolean
+    keyword?: string
+  }
+}

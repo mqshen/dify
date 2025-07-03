@@ -6,7 +6,7 @@ export type OutputVar = Record<string, {
 }>
 
 export type ReportNodeType = CommonNodeType & {
-  document_ids: string[]
+  report_ids: string[]
   variables: Variable[]
   outputs: OutputVar
 }

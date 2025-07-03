@@ -1,76 +1,62 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import produce from 'immer'
-import useOutputVarList from '../_base/hooks/use-output-var-list'
 import type { ReportNodeType } from './types'
 import useNodeCrud from '@/app/components/workflow/nodes/_base/hooks/use-node-crud'
-import type { Document } from '@/models/documents'
-import { fetchDocuments } from '@/service/documents'
-import { useStore as useAppStore } from '@/app/components/app/store'
-import {
-  useNodesReadOnly,
-} from '@/app/components/workflow/hooks'
+import type { Report } from '@/models/reports'
+import { fetchReports } from '@/service/reports'
+import { useNodesReadOnly } from '@/app/components/workflow/hooks'
 
 const useConfig = (id: string, payload: ReportNodeType) => {
   const { nodesReadOnly: readOnly } = useNodesReadOnly()
-  const { inputs, setInputs } = useNodeCrud<ReportNodeType>(id, payload)
+  const { inputs, setInputs: doSetInputs} = useNodeCrud<ReportNodeType>(id, payload)
 
   const inputRef = useRef(inputs)
 
-  const appId = useAppStore.getState().appDetail?.id
+  const setInputs = useCallback((s: ReportNodeType) => {
+    const newInputs = produce(s, (draft) => {
+    })
+    // not work in pass to draft...
+    doSetInputs(newInputs)
+    inputRef.current = newInputs
+  }, [doSetInputs])
 
-  const [selectedDocuments, setSelectedDocuments] = useState<Document[]>([])
-  const [selectedDocumentsLoaded, setSelectedDocumentsLoaded] = useState(false)
+  const [selectedReports, setSelectedReports] = useState<Report[]>([])
+  const [selectedReportsLoaded, setSelectedReportsLoaded] = useState(false)
+
   useEffect(() => {
     (async () => {
       const inputs = inputRef.current
-      const documentIds = inputs.document_ids
-      if (documentIds?.length > 0) {
-        const { data: dataSetsWithDetail } = await fetchDocuments({ url: '/documents', params: { page: 1, ids: documentIds } as any })
-        setSelectedDocuments(dataSetsWithDetail)
+      const reportIds = inputs.report_ids
+      if (reportIds?.length > 0) {
+        const { data: dataSetsWithDetail } = await fetchReports({ url: '/reports', params: { page: 1, ids: reportIds } as any })
+        setSelectedReports(dataSetsWithDetail)
       }
       const newInputs = produce(inputs, (draft) => {
-        draft.document_ids = documentIds
+        draft.report_ids = reportIds
       })
       setInputs(newInputs)
-      setSelectedDocumentsLoaded(true)
+      setSelectedReportsLoaded(true)
     })()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const handleOnDocumentsChange = useCallback((newDocuments: Document[]) => {
+  const handleOnReportsChange = useCallback((newReports: Report[]) => {
     const newInputs = produce(inputs, (draft) => {
-      draft.document_ids = newDocuments.map(d => d.id)
+      draft.report_ids = newReports.map(d => d.id)
     })
+    console.log("new inputs", newInputs)
     setInputs(newInputs)
   }, [inputs, setInputs])
 
   const [outputKeyOrders, setOutputKeyOrders] = useState<string[]>([])
 
-  const {
-    handleVarsChange,
-    handleAddVariable: handleAddOutputVariable,
-    handleRemoveVariable,
-    isShowRemoveVarConfirm,
-    hideRemoveVarConfirm,
-    onRemoveVarConfirm,
-  } = useOutputVarList<ReportNodeType>({
-    id,
-    inputs,
-    setInputs,
-    outputKeyOrders,
-    onOutputKeyOrdersChange: setOutputKeyOrders,
-  })
-
   return {
     readOnly,
     inputs,
-    selectedDocuments,
-    selectedDocumentsLoaded,
+    selectedReports,
+    selectedReportsLoaded,
+    handleOnReportsChange,
     outputKeyOrders,
-    handleRemoveVariable,
-    isShowRemoveVarConfirm,
-    hideRemoveVarConfirm,
-    onRemoveVarConfirm,
   }
 }
 

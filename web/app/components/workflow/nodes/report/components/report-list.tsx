@@ -3,18 +3,18 @@ import type { FC } from 'react'
 import React, { useCallback, useMemo } from 'react'
 import produce from 'immer'
 import { useTranslation } from 'react-i18next'
-import Item from './document-item'
-import type { DataSet } from '@/models/datasets'
+import Item from './report-item'
+import type { Report } from '@/models/reports'
 import { useSelector as useAppContextSelector } from '@/context/app-context'
 import { hasEditPermissionForDataset } from '@/utils/permission'
 
 type Props = {
-  list: DataSet[]
-  onChange: (list: DataSet[]) => void
+  list: Report[]
+  onChange: (list: Report[]) => void
   readonly?: boolean
 }
 
-const DocumentList: FC<Props> = ({
+const ReportList: FC<Props> = ({
   list,
   onChange,
   readonly,
@@ -32,7 +32,7 @@ const DocumentList: FC<Props> = ({
   }, [list, onChange])
 
   const handleChange = useCallback((index: number) => {
-    return (value: DataSet) => {
+    return (value: Report) => {
       const newList = produce(list, (draft) => {
         draft[index] = value
       })
@@ -42,14 +42,8 @@ const DocumentList: FC<Props> = ({
 
   const formattedList = useMemo(() => {
     return list.map((item) => {
-      const datasetConfig = {
-        createdBy: item.created_by,
-        partialMemberList: item.partial_member_list || [],
-        permission: item.permission,
-      }
       return {
         ...item,
-        editable: hasEditPermissionForDataset(userProfile?.id || '', datasetConfig),
       }
     })
   }, [list, userProfile?.id])
@@ -65,7 +59,7 @@ const DocumentList: FC<Props> = ({
               onRemove={handleRemove(index)}
               onChange={handleChange(index)}
               readonly={readonly}
-              editable={item.editable}
+              editable={false}
             />
           )
         })
@@ -79,4 +73,4 @@ const DocumentList: FC<Props> = ({
     </div>
   )
 }
-export default React.memo(DocumentList)
+export default React.memo(ReportList)

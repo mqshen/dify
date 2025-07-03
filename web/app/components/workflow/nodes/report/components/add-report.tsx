@@ -3,15 +3,15 @@ import { useBoolean } from 'ahooks'
 import type { FC } from 'react'
 import React, { useCallback } from 'react'
 import AddButton from '@/app/components/base/button/add-button'
-import SelectDocument from '@/app/components/app/configuration/document-config/select-document'
-import type { Document } from '@/models/documents'
+import SelectReport from '@/app/components/app/configuration/report-config/select-report'
+import type { Report } from '@/models/reports'
 
 type Props = {
   selectedIds: string[]
-  onChange: (documents: Document[]) => void
+  onChange: (documents: Report[]) => void
 }
 
-const AddDocument: FC<Props> = ({
+const AddReport: FC<Props> = ({
   selectedIds,
   onChange,
 }) => {
@@ -20,15 +20,15 @@ const AddDocument: FC<Props> = ({
     setFalse: hideModal,
   }] = useBoolean(false)
 
-  const handleSelect = useCallback((documents: Document[]) => {
-    onChange(documents)
+  const handleSelect = useCallback((reports: Report[]) => {
+    onChange(reports)
     hideModal()
   }, [onChange, hideModal])
   return (
     <div>
       <AddButton onClick={showModal} />
       {isShowModal && (
-        <SelectDocument
+        <SelectReport
           isShow={isShowModal}
           onClose={hideModal}
           selectedIds={selectedIds}
@@ -38,4 +38,4 @@ const AddDocument: FC<Props> = ({
     </div>
   )
 }
-export default React.memo(AddDocument)
+export default React.memo(AddReport)

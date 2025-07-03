@@ -8,7 +8,7 @@ import {
 
 const nodeDefault: NodeDefault<ReportNodeType> = {
   defaultValue: {
-    document_ids: [],
+    report_ids: [],
   },
   getAvailablePrevNodes(isChatMode: boolean) {
     const nodes = isChatMode

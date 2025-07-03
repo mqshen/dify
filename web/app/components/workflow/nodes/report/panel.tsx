@@ -1,15 +1,13 @@
 import type { FC } from 'react'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import RemoveEffectVarConfirm from '../_base/components/remove-effect-var-confirm'
 import useConfig from './use-config'
-import AddDocument from './components/add-document'
+import AddReport from './components/add-report'
 import type { ReportNodeType } from './types'
-import OutputVarList from '@/app/components/workflow/nodes/_base/components/variable/output-var-list'
-import AddButton from '@/app/components/base/button/add-button'
 import Field from '@/app/components/workflow/nodes/_base/components/field'
 import Split from '@/app/components/workflow/nodes/_base/components/split'
-import DocumentList from './components/document-list'
+import OutputVars, { VarItem } from '@/app/components/workflow/nodes/_base/components/output-vars'
+import ReportList from './components/report-list'
 import type { NodePanelProps } from '@/app/components/workflow/types'
 const i18nPrefix = 'workflow.nodes.code'
 
@@ -22,15 +20,8 @@ const Panel: FC<NodePanelProps<ReportNodeType>> = ({
   const {
     readOnly,
     inputs,
-    outputKeyOrders,
-    selectedDocuments,
-    handleOnDocumentsChange,
-    handleRemoveVariable,
-    handleVarsChange,
-    handleAddOutputVariable,
-    isShowRemoveVarConfirm,
-    hideRemoveVarConfirm,
-    onRemoveVarConfirm,
+    selectedReports,
+    handleOnReportsChange,
   } = useConfig(id, data)
 
   return (
@@ -43,44 +34,41 @@ const Panel: FC<NodePanelProps<ReportNodeType>> = ({
           operations={
             <div className='flex items-center space-x-1'>
               {!readOnly && (
-                <AddDocument
-                  selectedIds={inputs.document_ids}
-                  onChange={handleOnDocumentsChange}
+                <AddReport
+                  selectedIds={inputs.report_ids}
+                  onChange={handleOnReportsChange}
                 />
               )}
             </div>
           }
         >
-          <DocumentList
-            list={selectedDocuments}
-            onChange={handleOnDocumentsChange}
+          <ReportList
+            list={selectedReports}
+            onChange={handleOnReportsChange}
             readonly={readOnly}
           />
         </Field>
       </div>
       <Split />
-      <div className='px-4 pb-2 pt-4'>
-        <Field
-          title={t(`${i18nPrefix}.outputVars`)}
-          operations={
-            <AddButton onClick={handleAddOutputVariable} />
-          }
-          required
-        >
-          <OutputVarList
-            readonly={readOnly}
-            outputs={inputs.outputs}
-            outputKeyOrders={outputKeyOrders}
-            onChange={handleVarsChange}
-            onRemove={handleRemoveVariable}
-          />
-        </Field>
+      <div>
+        <OutputVars>
+          <>
+            <VarItem
+              name='result'
+              type='Array[Object]'
+              description={t(`${i18nPrefix}.outputVars.output`)}
+              subItems={[
+                {
+                  name: 'url',
+                  type: 'string',
+                  description: t(`${i18nPrefix}.outputVars.url`),
+                },
+              ]}
+            />
+
+          </>
+        </OutputVars>
       </div>
-      <RemoveEffectVarConfirm
-        isShow={isShowRemoveVarConfirm}
-        onCancel={hideRemoveVarConfirm}
-        onConfirm={onRemoveVarConfirm}
-      />
     </div >
   )
 }
