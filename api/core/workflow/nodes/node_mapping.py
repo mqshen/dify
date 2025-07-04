@@ -16,6 +16,7 @@ from core.workflow.nodes.llm import LLMNode
 from core.workflow.nodes.loop import LoopEndNode, LoopNode, LoopStartNode
 from core.workflow.nodes.parameter_extractor import ParameterExtractorNode
 from core.workflow.nodes.question_classifier import QuestionClassifierNode
+from core.workflow.nodes.report.report_node import ReportNode
 from core.workflow.nodes.start import StartNode
 from core.workflow.nodes.template_transform import TemplateTransformNode
 from core.workflow.nodes.tool import ToolNode
@@ -123,5 +124,9 @@ NODE_TYPE_CLASSES_MAPPING: Mapping[NodeType, Mapping[str, type[BaseNode]]] = {
     NodeType.AGENT: {
         LATEST_VERSION: AgentNode,
         "1": AgentNode,
+    },
+    NodeType.REPORT: {
+        LATEST_VERSION: ReportNode,
+        "1": ReportNode,
     },
 }

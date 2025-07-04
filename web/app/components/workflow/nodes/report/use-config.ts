@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import produce from 'immer'
-import type { ReportNodeType } from './types'
+import useVarList from '../_base/hooks/use-var-list'
+import { BlockEnum, VarType } from '../../types'
+import type { Var, Variable } from '../../types'
+import type { ReportNodeType, } from './types'
 import useNodeCrud from '@/app/components/workflow/nodes/_base/hooks/use-node-crud'
 import type { Report } from '@/models/reports'
 import { fetchReports } from '@/service/reports'
@@ -8,17 +11,22 @@ import { useNodesReadOnly } from '@/app/components/workflow/hooks'
 
 const useConfig = (id: string, payload: ReportNodeType) => {
   const { nodesReadOnly: readOnly } = useNodesReadOnly()
-  const { inputs, setInputs: doSetInputs} = useNodeCrud<ReportNodeType>(id, payload)
+  const { inputs, setInputs} = useNodeCrud<ReportNodeType>(id, payload)
+
+  const { handleVarListChange, handleAddVariable } = useVarList<ReportNodeType>({
+    inputs,
+    setInputs,
+  })
 
   const inputRef = useRef(inputs)
 
-  const setInputs = useCallback((s: ReportNodeType) => {
-    const newInputs = produce(s, (draft) => {
-    })
-    // not work in pass to draft...
-    doSetInputs(newInputs)
-    inputRef.current = newInputs
-  }, [doSetInputs])
+  // const setInputs = useCallback((s: ReportNodeType) => {
+  //   const newInputs = produce(s, (draft) => {
+  //   })
+  //   // not work in pass to draft...
+  //   doSetInputs(newInputs)
+  //   inputRef.current = newInputs
+  // }, [doSetInputs])
 
   const [selectedReports, setSelectedReports] = useState<Report[]>([])
   const [selectedReportsLoaded, setSelectedReportsLoaded] = useState(false)
@@ -46,17 +54,22 @@ const useConfig = (id: string, payload: ReportNodeType) => {
     })
     console.log("new inputs", newInputs)
     setInputs(newInputs)
-  }, [inputs, setInputs])
+    setSelectedReports(newReports)
+  }, [inputs, setInputs, selectedReports])
 
-  const [outputKeyOrders, setOutputKeyOrders] = useState<string[]>([])
+  const filterVar = useCallback((varPayload: Var) => {
+    return [VarType.string, VarType.number, VarType.secret, VarType.object, VarType.array, VarType.arrayNumber, VarType.arrayString, VarType.arrayObject, VarType.file, VarType.arrayFile].includes(varPayload.type)
+  }, [])
 
   return {
     readOnly,
     inputs,
+    handleVarListChange,
+    handleAddVariable,
     selectedReports,
     selectedReportsLoaded,
     handleOnReportsChange,
-    outputKeyOrders,
+    filterVar
   }
 }
 

@@ -7,6 +7,8 @@ import type { ReportNodeType } from './types'
 import Field from '@/app/components/workflow/nodes/_base/components/field'
 import Split from '@/app/components/workflow/nodes/_base/components/split'
 import OutputVars, { VarItem } from '@/app/components/workflow/nodes/_base/components/output-vars'
+import VarList from '@/app/components/workflow/nodes/_base/components/variable/var-list'
+import AddButton from '@/app/components/base/button/add-button'
 import ReportList from './components/report-list'
 import type { NodePanelProps } from '@/app/components/workflow/types'
 const i18nPrefix = 'workflow.nodes.code'
@@ -22,11 +24,30 @@ const Panel: FC<NodePanelProps<ReportNodeType>> = ({
     inputs,
     selectedReports,
     handleOnReportsChange,
+    handleVarListChange,
+    handleAddVariable,
+    filterVar,
   } = useConfig(id, data)
 
   return (
     <div className='mt-2'>
       <div className='space-y-4 px-4 pb-4'>
+        <Field
+          title={t(`${i18nPrefix}.inputVars`)}
+          operations={
+            !readOnly ? <AddButton onClick={handleAddVariable} /> : undefined
+          }
+        >
+          <VarList
+            readonly={readOnly}
+            nodeId={id}
+            list={inputs.variables}
+            onChange={handleVarListChange}
+            filterVar={filterVar}
+            isSupportFileVar={false}
+          />
+        </Field>
+        <Split />
         <Field
           title={t(`${i18nPrefix}.knowledge`)}
           required
