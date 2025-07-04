@@ -27,21 +27,13 @@ class DocxTemplateRender(object):
         else:
             self.doc = Document(self.file_content)
 
-    def render(self, template_def):
+    def render(self, template_def: dict[str, any]):
         doc = self.doc
-        # Logics:
-        # key_text: "yy{{请输入公司1的完整名称}}xxx""
-        # key_runs: [yy{{, 请输入公司, 1, 的完整名称, }}xxx]
-        # src_text: ['aaayyy{{', 请输入公司, 1, 的完整名称, }}xxxbbbb]
-        # tgt_rext options:
-        #  option 1: ['aaa', 北京数据项素，'', 智能科技有限公司, bbbb]
-        #  option 2: ['aaa', 北京数据项素智能科技有限公司, '', '', bbbb]
-        # allocate replace mapping
 
         # 采用找key 方式
-        for replace_info in template_def:
-            k1 = replace_info[0]
-            v1 = replace_info[1]
+        for k1, v1 in template_def.items():
+            # k1 = replace_info[0]
+            # v1 = replace_info[1]
             for table in doc.tables:
                 for i, row in enumerate(table.rows):
                     for j, cell in enumerate(row.cells):
