@@ -2,14 +2,13 @@ import type { FC } from 'react'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import useConfig from './use-config'
-import AddReport from './components/add-report'
+import EditReport from './components/edit-report'
 import type { ReportNodeType } from './types'
 import Field from '@/app/components/workflow/nodes/_base/components/field'
 import Split from '@/app/components/workflow/nodes/_base/components/split'
 import OutputVars, { VarItem } from '@/app/components/workflow/nodes/_base/components/output-vars'
 import VarList from '@/app/components/workflow/nodes/_base/components/variable/var-list'
 import AddButton from '@/app/components/base/button/add-button'
-import ReportList from './components/report-list'
 import type { NodePanelProps } from '@/app/components/workflow/types'
 const i18nPrefix = 'workflow.nodes.code'
 
@@ -51,23 +50,18 @@ const Panel: FC<NodePanelProps<ReportNodeType>> = ({
         <Field
           title={t(`${i18nPrefix}.knowledge`)}
           required
-
           operations={
             <div className='flex items-center space-x-1'>
               {!readOnly && (
-                <AddReport
-                  selectedIds={inputs.report_ids}
+                <EditReport
+                  nodeId={id}
+                  reportId={inputs.report_id}
                   onChange={handleOnReportsChange}
                 />
               )}
             </div>
           }
         >
-          <ReportList
-            list={selectedReports}
-            onChange={handleOnReportsChange}
-            readonly={readOnly}
-          />
         </Field>
       </div>
       <Split />

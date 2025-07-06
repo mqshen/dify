@@ -104,7 +104,7 @@ export default function Word({ data, workflow }) {
         }
     }, [])
 
-    return <div className="relative w-full h-full">
+    return <div className="relative w-full h-[calc(100%-52px)]">
         <div className="absolute bg-[#252525] left-0 top-0 h-[26px] leading-[26px] w-full text-gray-400 text-center text-xs">ctrl+s to save</div>
         <div id="bsoffice"></div>
     </div>

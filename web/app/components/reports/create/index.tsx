@@ -3,35 +3,32 @@
 import Loading from "@/app/components/base/loading";
 import Button from "@/app/components/base/button";
 import Word from "@/app/components/reports/Word";
-import {
-  ChevronDownIcon,
-  ChevronLeftIcon,
-  MagnifyingGlassIcon,
-} from "@heroicons/react/24/outline";
-// import { ChevronDown, ChevronLeft } from "lucide-react"
-import { useEffect, useRef, useState } from "react";
+import { RiCloseLine } from "@remixicon/react";
+import type { ValueSelector} from "@/app/components/workflow/types";
+import { VarType as VarKindType } from '@/app/components/workflow/nodes/tool/types'
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { fetchReportTemplate, fetchReportDetail } from "@/service/reports";
-import type { Report } from "@/models/reports";
-import { basePath } from "@/utils/var";
+import VariablePicker from "./variable-picker";
 
 type ReportEditProps = {
+  nodeId: string
   reportId?: string;
-  nodeId?: string;
+  onCancel: () => void;
 };
 
 // import SelectVar from "./SelectVar"
 // save(fe) -> office(onlyofc) -> upload(be)
 export default function ReportWordEdit({
-  reportId,
   nodeId,
+  reportId,
+  onCancel,
 }: ReportEditProps) {
   const { t } = useTranslation();
 
-  const { docx, loading, pageLoading, createDocx, importDocx } = useReport(
-    reportId,
-  );
+  const { docx, loading, pageLoading, createDocx, importDocx } =
+    useReport(reportId);
 
   // inset var
   const iframeRef = useRef<HTMLElement>(null);
@@ -62,10 +59,20 @@ export default function ReportWordEdit({
   if (!docx.path)
     return (
       <div className="relative size-full">
-        <div className="absolute -top-10 z-10 flex gap-4">
-          {/* <DialogClose className="">
-                <Button variant="outline" size="icon" className="bg-[#fff] size-8"><ChevronLeftIcon /></Button>
-            </DialogClose> */}
+        <div className="absolute z-10 flex gap-4">
+          <div className="absolute -right-11 top-6 z-[9999] flex flex-col items-center">
+            <Button
+              variant="tertiary"
+              size="large"
+              className="px-2"
+              onClick={onCancel}
+            >
+              <RiCloseLine className="h-5 w-5" />
+            </Button>
+            <div className="system-2xs-medium-uppercase mt-1 text-text-tertiary">
+              ESC
+            </div>
+          </div>
         </div>
         <div className="bg-accent size-full flex justify-center items-center">
           <div className="border rounded-md p-8 py-10 w-1/2 bg-card">
@@ -92,28 +99,42 @@ export default function ReportWordEdit({
       </div>
     );
 
+  const handleVarReferenceChange = (value: ValueSelector | string, varKindType: VarKindType) => {
+      
+  }
+
   return (
-    <div className="relative size-full">
+    <div className="absolute size-full">
       {loading && (
         <div className="absolute w-full h-full top-0 left-0 flex justify-center items-center z-10 bg-primary/20">
           <Loading />
         </div>
       )}
-      <div className="flex h-full">
+      <div className="flex size-full">
         <div ref={iframeRef} className="relative flex-1 border bg-accent">
-          <div className="absolute -top-10 z-10 flex gap-4">
-            {/* <DialogClose className="">
-                        <Button variant="outline" size="icon" className="bg-[#fff] size-8"><ChevronLeftIcon /></Button>
-                    </DialogClose>
-                    {show && <SelectVar nodeId={nodeId} itemKey={''} onSelect={(E, v) => {
-                        handleInset(`${E.id}.${v.value}`)
-                        setShow(false)
-                        setTimeout(() => {
-                            setShow(true)
-                        }, 1);
-                    }}>
-                        <Button className="h-8">{t('inserVar')}<ChevronDownIcon size={14} /></Button>
-                    </SelectVar>} */}
+          <div className=" z-10 flex gap-4">
+            <div>
+              <VariablePicker
+                nodeId={nodeId}
+                isShowNodeName={true}
+                isAddBtnTrigger={true}
+                className="grow"
+                onChange={handleVarReferenceChange}
+              />
+            </div>
+            <div className="fr top-6 z-[9999] flex flex-col items-center">
+              <Button
+                variant="tertiary"
+                size="large"
+                className="px-2"
+                onClick={onCancel}
+              >
+                <RiCloseLine className="h-5 w-5" />
+              </Button>
+              <div className="system-2xs-medium-uppercase mt-1 text-text-tertiary">
+                ESC
+              </div>
+            </div>
           </div>
           <Word data={docx} workflow></Word>
           {/* <LabelPanne onInset={handleInset}></LabelPanne> */}
