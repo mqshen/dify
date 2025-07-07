@@ -153,7 +153,7 @@ class ReportCallbackApi(Resource):
             # tenant_id=args["tenant_id"],
             tenant_id="5275e976-348c-4a0e-9446-91302537f515",
             user_id="1aafaffa-b595-4457-97c6-e0d5b801293b",
-            id=key,
+            node_id=key,
             url=object_name,
         )
 

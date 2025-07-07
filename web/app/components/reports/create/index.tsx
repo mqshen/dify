@@ -6,7 +6,7 @@ import Word from "@/app/components/reports/Word";
 import { RiCloseLine } from "@remixicon/react";
 import type { ValueSelector} from "@/app/components/workflow/types";
 import { VarType as VarKindType } from '@/app/components/workflow/nodes/tool/types'
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { fetchReportTemplate, fetchReportDetail } from "@/service/reports";
@@ -14,7 +14,7 @@ import VariablePicker from "./variable-picker";
 
 type ReportEditProps = {
   nodeId: string
-  reportId?: string;
+  onAddVariable: (variableName: string, valueSelector: ValueSelector) => void
   onCancel: () => void;
 };
 
@@ -22,17 +22,19 @@ type ReportEditProps = {
 // save(fe) -> office(onlyofc) -> upload(be)
 export default function ReportWordEdit({
   nodeId,
-  reportId,
+  onAddVariable,
   onCancel,
 }: ReportEditProps) {
   const { t } = useTranslation();
 
   const { docx, loading, pageLoading, createDocx, importDocx } =
-    useReport(reportId);
+    useReport(nodeId);
 
   // inset var
   const iframeRef = useRef<HTMLElement>(null);
-  const handleInset = (value: any) => {
+  const handleInset = (value: ValueSelector) => {
+    const variableName = typeof value === 'string' ? value : value.join('.')
+    onAddVariable(variableName, value)
     if (!iframeRef.current) return;
     const iframeDom = iframeRef.current.querySelector("iframe");
     if (!iframeDom) return;
@@ -41,7 +43,7 @@ export default function ReportWordEdit({
       JSON.stringify({
         type: "onExternalPluginMessage",
         action: "insetMarker",
-        data: value,
+        data: variableName,
       }),
       "*"
     );
@@ -56,7 +58,7 @@ export default function ReportWordEdit({
     );
 
   // new
-  if (!docx.path)
+  if (!docx.path) {
     return (
       <div className="relative size-full">
         <div className="absolute z-10 flex gap-4">
@@ -98,9 +100,10 @@ export default function ReportWordEdit({
         </div>
       </div>
     );
+  }
 
   const handleVarReferenceChange = (value: ValueSelector | string, varKindType: VarKindType) => {
-      
+      handleInset(value)
   }
 
   return (
@@ -136,7 +139,7 @@ export default function ReportWordEdit({
               </div>
             </div>
           </div>
-          <Word data={docx} workflow></Word>
+          <Word data={docx} ></Word>
           {/* <LabelPanne onInset={handleInset}></LabelPanne> */}
         </div>
       </div>
@@ -144,7 +147,7 @@ export default function ReportWordEdit({
   );
 }
 
-const useReport = (reportId?: string) => {
+const useReport = (nodeId: string) => {
   const [loading, setLoading] = useState(false);
   const [pageLoading, setPageLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
@@ -155,13 +158,13 @@ const useReport = (reportId?: string) => {
   });
 
   useEffect(() => {
-    if (reportId) {
+    if (nodeId) {
       (async () => {
-        if (reportId) {
+        if (nodeId) {
           try {
-            const detail = await fetchReportDetail(reportId);
+            const detail = await fetchReportDetail(nodeId);
             setDocx({
-              key: reportId,
+              key: nodeId,
               path: detail.url,
             });
             setPageLoading(false);
@@ -177,11 +180,11 @@ const useReport = (reportId?: string) => {
           key: res.version_key,
           path: res.url,
         });
-        console.warn("REPORT:读取报告所用KEY是 :>> ", reportId);
+        console.warn("REPORT:读取报告所用KEY是 :>> ", nodeId);
         console.warn("REPORT:读取报告所后变更KEY是 :>> ", res.version_key);
       });
     }
-  }, [reportId]);
+  }, [nodeId]);
 
   const handleCreate = async () => {
     // 本地调试

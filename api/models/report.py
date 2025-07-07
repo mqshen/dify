@@ -1,4 +1,3 @@
-from mypy.modulefinder import unique
 from sqlalchemy import func
 
 from .base import Base
@@ -15,7 +14,7 @@ class Report(Base):
     )
 
     id = db.Column(StringUUID, server_default=db.text("uuid_generate_v4()"))
-    node_id = db.Column(StringUUID, nullable=False)
+    node_id = db.Column(db.String(32), nullable=False)
     tenant_id = db.Column(StringUUID, nullable=False)
     name = db.Column(db.String(255), nullable=False)
     url = db.Column(db.String(100), nullable=True)

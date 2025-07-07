@@ -3,6 +3,6 @@ from core.workflow.nodes.base.entities import BaseNodeData
 
 class ReportNodeData(BaseNodeData):
     variables: list[VariableSelector]
-    report_ids: list[str]
+    report_id: str
 
 

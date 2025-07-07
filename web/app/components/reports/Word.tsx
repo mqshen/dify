@@ -1,10 +1,17 @@
 import i18next from "i18next"
 import { useEffect, useContext } from "react"
 import { useToastContext } from '@/app/components/base/toast'
-import { basePath } from '@/utils/var'
 import { API_PREFIX, REPORT_URL_PREFIX } from '@/config'
+import type {WordReport} from '@/app/components/workflow/nodes/report/types'
 
-export default function Word({ data, workflow }) {
+declare global {
+    interface Window {
+        editor:any;
+        DocsAPI:any;
+    }
+}
+
+export default function Word({ data }: {data: WordReport}) {
 
     // console.log('wordUrl :>> ', wordUrl, data);
     // 本地调试

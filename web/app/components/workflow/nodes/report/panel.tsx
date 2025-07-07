@@ -7,10 +7,9 @@ import type { ReportNodeType } from './types'
 import Field from '@/app/components/workflow/nodes/_base/components/field'
 import Split from '@/app/components/workflow/nodes/_base/components/split'
 import OutputVars, { VarItem } from '@/app/components/workflow/nodes/_base/components/output-vars'
-import VarList from '@/app/components/workflow/nodes/_base/components/variable/var-list'
-import AddButton from '@/app/components/base/button/add-button'
-import type { NodePanelProps } from '@/app/components/workflow/types'
-const i18nPrefix = 'workflow.nodes.code'
+import type { NodePanelProps, ValueSelector } from '@/app/components/workflow/types'
+
+const i18nPrefix = 'workflow.nodes.report'
 
 const Panel: FC<NodePanelProps<ReportNodeType>> = ({
   id,
@@ -21,17 +20,13 @@ const Panel: FC<NodePanelProps<ReportNodeType>> = ({
   const {
     readOnly,
     inputs,
-    selectedReports,
-    handleOnReportsChange,
-    handleVarListChange,
     handleAddVariable,
-    filterVar,
   } = useConfig(id, data)
 
   return (
     <div className='mt-2'>
       <div className='space-y-4 px-4 pb-4'>
-        <Field
+        {/* <Field
           title={t(`${i18nPrefix}.inputVars`)}
           operations={
             !readOnly ? <AddButton onClick={handleAddVariable} /> : undefined
@@ -42,10 +37,9 @@ const Panel: FC<NodePanelProps<ReportNodeType>> = ({
             nodeId={id}
             list={inputs.variables}
             onChange={handleVarListChange}
-            filterVar={filterVar}
             isSupportFileVar={false}
           />
-        </Field>
+        </Field> */}
         <Split />
         <Field
           title={t(`${i18nPrefix}.knowledge`)}
@@ -56,7 +50,7 @@ const Panel: FC<NodePanelProps<ReportNodeType>> = ({
                 <EditReport
                   nodeId={id}
                   reportId={inputs.report_id}
-                  onChange={handleOnReportsChange}
+                  onAddVariable={handleAddVariable}
                 />
               )}
             </div>

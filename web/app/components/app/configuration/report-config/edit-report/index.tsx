@@ -4,23 +4,21 @@ import type { FC } from 'react'
 import React, { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import MenuDialog from '@/app/components/header/account-setting/menu-dialog'
-import type { Report } from '@/models/reports'
+import type { ValueSelector } from '@/app/components/workflow/types'
 import ReportUpdateForm from '@/app/components/reports/create'
 
 export type ISelectReportProps = {
   nodeId: string
   isShow: boolean
   onClose: () => void
-  reportId: string
-  onSelect: (document: Report[]) => void
+  onAddVariable: (variableName: string, valueSelector: ValueSelector) => void
 }
 
 const SelectReport: FC<ISelectReportProps> = ({
   nodeId,
   isShow,
   onClose,
-  reportId,
-  onSelect,
+  onAddVariable,
 }) => {
   const { t } = useTranslation()
   const handleChange = (key: string) => {
@@ -30,10 +28,8 @@ const SelectReport: FC<ISelectReportProps> = ({
     <MenuDialog
       show={isShow}
       onClose={onClose}
-      // className='w-full'
-      // title={t('appDebug.feature.document.selectTitle')}
     >
-      <ReportUpdateForm nodeId={nodeId} reportId={reportId} onCancel={() => {}}/>
+      <ReportUpdateForm nodeId={nodeId} onAddVariable={onAddVariable} onCancel={onClose}/>
     </MenuDialog>
   )
 }

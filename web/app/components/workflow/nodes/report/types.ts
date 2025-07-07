@@ -10,3 +10,8 @@ export type ReportNodeType = CommonNodeType & {
   variables: Variable[]
   outputs: OutputVar
 }
+
+export type WordReport = {
+  key: string
+  path: string
+}

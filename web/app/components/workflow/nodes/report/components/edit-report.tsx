@@ -4,28 +4,25 @@ import type { FC } from 'react'
 import React, { useCallback } from 'react'
 import { RiEdit2Line } from '@remixicon/react'
 import EditReport from '@/app/components/app/configuration/report-config/edit-report'
-import type { Report } from '@/models/reports'
+import type { ValueSelector } from '@/app/components/workflow/types'
 
 type Props = {
   nodeId: string
   reportId: string
-  onChange: (documents: Report[]) => void
+  onAddVariable: (variableName: string, valueSelector: ValueSelector) => void
 }
 
 const AddReport: FC<Props> = ({
   nodeId,
   reportId,
-  onChange,
+  onAddVariable,
 }) => {
   const [isShowModal, {
     setTrue: showModal,
     setFalse: hideModal,
   }] = useBoolean(false)
 
-  const handleSelect = useCallback((reports: Report[]) => {
-    onChange(reports)
-    hideModal()
-  }, [onChange, hideModal])
+
   return (
     <div>
       <div 
@@ -38,8 +35,7 @@ const AddReport: FC<Props> = ({
           nodeId={nodeId}
           isShow={isShowModal}
           onClose={hideModal}
-          reportId={reportId}
-          onSelect={handleSelect}
+          onAddVariable={onAddVariable}
         />
       )}
     </div>

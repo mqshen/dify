@@ -54,17 +54,15 @@ class ReportNode(BaseNode[ReportNodeData]):
 
     def _generate_reports(self, node_data: ReportNodeData, variables) -> list[str]:
         available_reports = []
-        report_ids = node_data.report_ids
+        report_id = node_data.report_id
 
         print("------------------")
-        print(f"start process report id :{report_ids} success")
+        print(f"start process report id :{report_id} success")
         print("------------------")
-        results = db.session.query(Report).filter(Report.id.in_(report_ids)).all()
+        report = db.session.query(Report).filter(node_id=report_id).first()
 
-        for report in results:
+        if report :
             # pass if dataset is not available
-            if not report:
-                continue
             object_name = report.url
             print("------------------")
             print(f"start process report name :{object_name} success")
@@ -94,16 +92,16 @@ class ReportNode(BaseNode[ReportNodeData]):
 
         return available_reports
 
-if __name__ == '__main__':
-    variables = {'tt': 'ede59869-d180-460e-be42-81db6bcc1c8a', 'ssdf2': 'e25e166e-7be7-48e0-9c05-56b7663b22ca'}
-    doc_parse = DocxTemplateRender(filepath="/Users/goldratio/Downloads/uv/37cdc3b1-5bfc-47cb-adca-22774cc0d186.docx")
-    output_doc = doc_parse.render(variables)
-    output_content = io.BytesIO()
-    output_doc.save(output_content)
-    output_content.seek(0)
-
-    # minio的临时目录
-    tmp_object_name = "test.docx"
-    # upload file to minio
-    with open(tmp_object_name, "wb") as file:
-        file.write(output_content.read())
+# if __name__ == '__main__':
+#     variables = {'tt': 'ede59869-d180-460e-be42-81db6bcc1c8a', 'ssdf2': 'e25e166e-7be7-48e0-9c05-56b7663b22ca'}
+#     doc_parse = DocxTemplateRender(filepath="/Users/goldratio/Downloads/uv/37cdc3b1-5bfc-47cb-adca-22774cc0d186.docx")
+#     output_doc = doc_parse.render(variables)
+#     output_content = io.BytesIO()
+#     output_doc.save(output_content)
+#     output_content.seek(0)
+#
+#     # minio的临时目录
+#     tmp_object_name = "test.docx"
+#     # upload file to minio
+#     with open(tmp_object_name, "wb") as file:
+#         file.write(output_content.read())
