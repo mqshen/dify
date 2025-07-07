@@ -44,7 +44,7 @@ class ReportNode(BaseNode[ReportNodeData]):
         try:
 
             # Transform result
-            result = self._generate_reports(self.node_data, variables)
+            result = self._generate_reports(variables)
         except ReportNotExistError as e:
             return NodeRunResult(
                 status=WorkflowNodeExecutionStatus.FAILED, inputs=variables, error=str(e), error_type=type(e).__name__
@@ -52,14 +52,14 @@ class ReportNode(BaseNode[ReportNodeData]):
 
         return NodeRunResult(status=WorkflowNodeExecutionStatus.SUCCEEDED, inputs=variables, outputs={"result": result})
 
-    def _generate_reports(self, node_data: ReportNodeData, variables) -> list[str]:
+    def _generate_reports(self, variables) -> list[str]:
         available_reports = []
-        report_id = node_data.report_id
+        report_id = self.node_id
 
         print("------------------")
         print(f"start process report id :{report_id} success")
         print("------------------")
-        report = db.session.query(Report).filter(node_id=report_id).first()
+        report = db.session.query(Report).filter_by(node_id=report_id).first()
 
         if report :
             # pass if dataset is not available
