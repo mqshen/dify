@@ -89,14 +89,21 @@ class ReportApi(Resource):
     @setup_required
     @login_required
     @account_initialization_required
-    def get(self, report_id):
-        report_id_str = str(report_id)
-        report = ReportService.get_report(report_id_str)
+    def get(self, node_id: str):
+        report = ReportService.get_report(node_id)
+        if report:
+            return {
+                "id": report.id,
+                "node_id": node_id,
+                "name": report.name,
+                "url": storage.get_url(report.url),
+            }, 200
         return {
-            "id": report.id,
-            "name": report.name,
-            "url": storage.get_url(report.url),
+            "node_id": node_id,
+            "name": "",
+            "url": "",
         }, 200
+
 
 class ReportTemplateApi(Resource):
     @setup_required
@@ -142,17 +149,17 @@ class ReportCallbackApi(Resource):
         except Exception as e:
             print(f"Unexpected error occurred while upload file to storage {e}")
 
-        ReportService.create_empty_report(
+        ReportService.create_or_update_report(
             # tenant_id=args["tenant_id"],
             tenant_id="5275e976-348c-4a0e-9446-91302537f515",
             user_id="1aafaffa-b595-4457-97c6-e0d5b801293b",
-            name=key,
+            id=key,
             url=object_name,
         )
 
         return {'error': 0}
 
 api.add_resource(ReportListApi, "/reports")
-api.add_resource(ReportApi, "/reports/<uuid:report_id>")
+api.add_resource(ReportApi, "/reports/<node_id>")
 api.add_resource(ReportTemplateApi, "/reports/template")
 api.add_resource(ReportCallbackApi, "/reports/callback")

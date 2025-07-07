@@ -40,6 +40,24 @@ class ReportService:
         db.session.commit()
 
     @classmethod
-    def get_report(cls, report_id) -> Optional[Report]:
-        report: Optional[Report] = db.session.query(Report).filter_by(id=report_id).first()
+    def create_or_update_report(cls, tenant_id: str, user_id: str, node_id: str, url: str):
+        report = cls.get_report(node_id)
+        if report:
+            report.url = url
+        else:
+            report = Report(name=node_id)
+            report.node_id = node_id
+            report.url = url
+            report.created_by = user_id
+            report.updated_by = user_id
+            report.tenant_id = tenant_id
+            db.session.add(report)
+
+        db.session.commit()
+
+
+
+    @classmethod
+    def get_report(cls, node_id: str) -> Optional[Report]:
+        report: Optional[Report] = db.session.query(Report).filter_by(node_id=node_id).first()
         return report
