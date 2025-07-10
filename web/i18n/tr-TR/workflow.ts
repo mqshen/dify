@@ -256,6 +256,7 @@ const translation = {
     'loop-start': 'Döngü Başlangıcı',
     'loop-end': 'Döngüden Çık',
     'loop': 'Döngü',
+    report: 'Rapor',
   },
   blocksAbout: {
     'start': 'Bir iş akışını başlatmak için başlangıç parametrelerini tanımlayın',
@@ -545,6 +546,7 @@ const translation = {
       advancedDependencies: 'Gelişmiş Bağımlılıklar',
       advancedDependenciesTip: 'Burada daha uzun sürede tüketilen veya varsayılan olarak yerleşik olmayan bazı ön yüklenmiş bağımlılıkları ekleyin',
       searchDependencies: 'Bağımlılıkları Ara',
+      syncFunctionSignature: 'İşlev imzasını kodla eşitle',
     },
     templateTransform: {
       inputVars: 'Giriş Değişkenleri',
@@ -876,6 +878,13 @@ const translation = {
       error_other: '{{count}} Hata',
       loop_one: '{{count}} Döngü',
       loopVariables: 'Döngü Değişkenleri',
+    },
+    report: {
+      outputVars: {
+        output: 'Rapor oluştur',
+        url: 'Rapor URL\'si',
+      },
+      report: 'Rapor',
     },
   },
   tracing: {

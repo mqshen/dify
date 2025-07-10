@@ -253,6 +253,7 @@ const translation = {
     'loop': 'Zanka',
     'agent': 'Agent',
     'variable-assigner': 'Spremenljivka agregator',
+    report: 'Poročilo',
   },
   blocksAbout: {
     'list-operator': 'Uporabljeno za filtriranje ali razvrščanje vsebine polja.',
@@ -546,6 +547,7 @@ const translation = {
       outputVars: 'Izhodne spremenljivke',
       inputVars: 'Vhodne spremenljivke',
       advancedDependenciesTip: 'Dodajte nekaj vnaprej naloženih odvisnosti, ki potrebujejo več časa za obdelavo ali niso privzete vgrajene.',
+      syncFunctionSignature: 'Sinhronizacija podpisa funkcije s kodo',
     },
     templateTransform: {
       outputVars: {
@@ -875,6 +877,13 @@ const translation = {
       toolNotAuthorizedTooltip: '{{tool}} Ni pooblaščen',
       strategyNotFoundDescAndSwitchVersion: 'Nameščena različica vtičnika ne podpira te strategije. Kliknite za preklop na drugo različico.',
       pluginNotInstalledDesc: 'Ta vtičnik je nameščen iz GitHuba. Prosimo, da greste v vtičnike in ga ponovo namestite.',
+    },
+    report: {
+      outputVars: {
+        url: 'URL poročila',
+        output: 'Ustvarjanje poročila',
+      },
+      report: 'Poročilo',
     },
   },
   tracing: {

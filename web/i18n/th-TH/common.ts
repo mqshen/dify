@@ -148,6 +148,7 @@ const translation = {
     exploreMarketplace: 'สํารวจ Marketplace',
     appDetail: 'รายละเอียดแอป',
     account: 'บัญชี',
+    repots: 'รายงาน',
   },
   userProfile: {
     settings: 'การตั้งค่า',
@@ -448,6 +449,7 @@ const translation = {
         addPages: 'เพิ่มหน้า',
         preview: 'ดูตัวอย่าง',
       },
+      integratedAlert: 'Notion ถูกรวมเข้าด้วยกันผ่านข้อมูลประจําตัวภายใน ไม่จําเป็นต้องอนุญาตใหม่',
     },
     website: {
       title: 'เว็บไซต์',

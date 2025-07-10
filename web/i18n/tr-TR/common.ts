@@ -153,6 +153,7 @@ const translation = {
     exploreMarketplace: 'Marketplace\'i Keşfedin',
     appDetail: 'Uygulama Detayı',
     account: 'Hesap',
+    repots: 'Rapor',
   },
   userProfile: {
     settings: 'Ayarlar',
@@ -453,6 +454,7 @@ const translation = {
         addPages: 'Sayfa ekle',
         preview: 'ÖNİZLEME',
       },
+      integratedAlert: 'Notion, dahili kimlik bilgisi ile entegre edilmiştir, yeniden yetkilendirmeye gerek yoktur.',
     },
     website: {
       title: 'Web Sitesi',

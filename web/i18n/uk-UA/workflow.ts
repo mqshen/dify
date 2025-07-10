@@ -256,6 +256,7 @@ const translation = {
     'loop-start': 'Початок циклу',
     'loop': 'Петля',
     'loop-end': 'Вихід з циклу',
+    report: 'Звіт',
   },
   blocksAbout: {
     'start': 'Визначте початкові параметри для запуску робочого потоку',
@@ -544,6 +545,7 @@ const translation = {
       advancedDependencies: 'Розширені залежності',
       advancedDependenciesTip: 'Додайте тут деякі попередньо завантажені залежності, які потребують більше часу для споживання або не є за замовчуванням вбудованими',
       searchDependencies: 'Шукати залежності',
+      syncFunctionSignature: 'Синхронізація підпису функції з кодом',
     },
     templateTransform: {
       inputVars: 'Вхідні змінні',
@@ -875,6 +877,13 @@ const translation = {
       loopMaxCountError: 'Будь ласка, введіть дійсне максимальне значення циклу, яке коливається від 1 до {{maxCount}}',
       deleteTitle: 'Видалити вузол циклу?',
       loopMaxCount: 'Максимальна кількість циклів',
+    },
+    report: {
+      outputVars: {
+        url: 'URL-адреса звіту',
+        output: 'Сформувати звіт',
+      },
+      report: 'Звіт',
     },
   },
   tracing: {

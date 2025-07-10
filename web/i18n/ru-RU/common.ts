@@ -153,6 +153,7 @@ const translation = {
     exploreMarketplace: 'Подробнее о Marketplace',
     appDetail: 'Детали приложения',
     account: 'Учетная запись',
+    repots: 'Отчеты',
   },
   userProfile: {
     settings: 'Настройки',
@@ -453,6 +454,7 @@ const translation = {
         addPages: 'Добавить страницы',
         preview: 'ПРЕДПРОСМОТР',
       },
+      integratedAlert: 'Notion интегрируется через внутренние учетные данные, не нужно повторно авторизоваться.',
     },
     website: {
       title: 'Веб-сайт',

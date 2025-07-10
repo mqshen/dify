@@ -256,6 +256,7 @@ const translation = {
     'loop-start': '루프 시작',
     'loop-end': '루프 종료',
     'loop': '루프',
+    report: '보고서',
   },
   blocksAbout: {
     'start': '워크플로우를 시작하기 위한 초기 매개변수를 정의합니다',
@@ -544,6 +545,7 @@ const translation = {
       advancedDependencies: '고급 종속성',
       advancedDependenciesTip: '더 많은 시간이 소요되거나 기본으로 내장되지 않은 일부 미리 로드된 종속성을 여기에 추가하세요',
       searchDependencies: '종속성 검색',
+      syncFunctionSignature: '함수 서명을 코드에 동기화',
     },
     templateTransform: {
       inputVars: '입력 변수',
@@ -875,6 +877,13 @@ const translation = {
       variableName: '변수 이름',
       loopNode: '루프 노드',
       inputMode: '입력 모드',
+    },
+    report: {
+      outputVars: {
+        output: '보고서 생성',
+        url: '보고서 URL',
+      },
+      report: '보고서',
     },
   },
   tracing: {

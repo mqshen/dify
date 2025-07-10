@@ -256,6 +256,7 @@ const translation = {
     'loop': 'Цикл',
     'loop-start': 'Начало цикла',
     'loop-end': 'Выйти из цикла',
+    report: 'Сообщать',
   },
   blocksAbout: {
     'start': 'Определите начальные параметры для запуска рабочего процесса',
@@ -544,6 +545,7 @@ const translation = {
       advancedDependencies: 'Расширенные зависимости',
       advancedDependenciesTip: 'Добавьте сюда некоторые предварительно загруженные зависимости, которые занимают больше времени для потребления или не являются встроенными по умолчанию',
       searchDependencies: 'Поиск зависимостей',
+      syncFunctionSignature: 'Синхронизация подписи функции с кодом',
     },
     templateTransform: {
       inputVars: 'Входные переменные',
@@ -875,6 +877,13 @@ const translation = {
       initialLoopVariables: 'Начальные переменные цикла',
       breakCondition: 'Условие завершения цикла',
       loopVariables: 'Циклические переменные',
+    },
+    report: {
+      outputVars: {
+        output: 'Создание отчета',
+        url: 'URL-адрес отчета',
+      },
+      report: 'Сообщать',
     },
   },
   tracing: {

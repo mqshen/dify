@@ -153,6 +153,7 @@ const translation = {
     exploreMarketplace: 'Explora el mercado',
     appDetail: 'Detalles de la aplicación',
     account: 'Cuenta',
+    repots: 'Informes',
   },
   userProfile: {
     settings: 'Configuraciones',
@@ -453,6 +454,7 @@ const translation = {
         addPages: 'Agregar páginas',
         preview: 'VISTA PREVIA',
       },
+      integratedAlert: 'Notion se integra a través de una credencial interna, sin necesidad de volver a autorizar.',
     },
     website: {
       title: 'Sitio web',

@@ -158,6 +158,7 @@ const translation = {
     exploreMarketplace: 'मार्केटप्लेस का अन्वेषण करें',
     appDetail: 'ऐप विवरण',
     account: 'खाता',
+    repots: 'रिपोर्टें',
   },
   userProfile: {
     settings: 'सेटिंग्स',
@@ -469,6 +470,7 @@ const translation = {
         addPages: 'पृष्ठ जोड़ें',
         preview: 'पूर्वावलोकन',
       },
+      integratedAlert: 'नोट्शन आंतरिक प्रमाण पत्र के माध्यम से एकीकृत है, फिर से प्रमाणित करने की आवश्यकता नहीं है।',
     },
     website: {
       title: 'वेबसाइट',

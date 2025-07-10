@@ -254,6 +254,7 @@ const translation = {
     'loop-start': 'ループ開始',
     'loop': 'ループ',
     'loop-end': 'ループ完了',
+    report: '報告書',
   },
   blocksAbout: {
     'start': 'ワークフロー開始時の初期パラメータを定義します。',
@@ -882,6 +883,13 @@ const translation = {
       unsupportedStrategy: 'サポートされていない戦略',
       pluginNotFoundDesc: 'このプラグインは GitHub からインストールされています。再インストールするにはプラグインに移動してください。',
       strategyNotFoundDesc: 'インストールされたプラグインのバージョンは、この戦略を提供していません。',
+    },
+    report: {
+      outputVars: {
+        url: 'レポートURL',
+        output: 'レポートを生成する',
+      },
+      report: '報告書',
     },
   },
   tracing: {

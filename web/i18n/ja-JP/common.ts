@@ -159,6 +159,7 @@ const translation = {
     newDataset: 'ナレッジの作成',
     tools: 'ツール',
     exploreMarketplace: 'マーケットプレイスを探索する',
+    repots: '報告書',
   },
   userProfile: {
     settings: '設定',
@@ -467,6 +468,7 @@ const translation = {
         addPages: 'ページの追加',
         preview: 'プレビュー',
       },
+      integratedAlert: 'Notionは内部資格情報を通じて統合されており、再認証する必要はありません。',
     },
     website: {
       title: 'ウェブサイト',

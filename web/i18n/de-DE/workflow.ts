@@ -256,6 +256,7 @@ const translation = {
     'loop': 'Schleife',
     'loop-start': 'Schleifenbeginn',
     'loop-end': 'Schleife beenden',
+    report: 'Bericht',
   },
   blocksAbout: {
     'start': 'Definieren Sie die Anfangsparameter zum Starten eines Workflows',
@@ -544,6 +545,7 @@ const translation = {
       advancedDependencies: 'Erweiterte Abhängigkeiten',
       advancedDependenciesTip: 'Fügen Sie hier einige vorinstallierte Abhängigkeiten hinzu, die mehr Zeit in Anspruch nehmen oder nicht standardmäßig eingebaut sind',
       searchDependencies: 'Abhängigkeiten suchen',
+      syncFunctionSignature: 'Synchronisieren der Funktionssignatur mit Code',
     },
     templateTransform: {
       inputVars: 'Eingabevariablen',
@@ -875,6 +877,13 @@ const translation = {
       error_other: '{{count}} Fehler',
       output: 'Ausgabewert',
       input: 'Eingabe',
+    },
+    report: {
+      outputVars: {
+        output: 'Bericht generieren',
+        url: 'URL des Berichts',
+      },
+      report: 'Bericht',
     },
   },
   tracing: {

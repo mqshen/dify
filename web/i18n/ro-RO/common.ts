@@ -149,6 +149,7 @@ const translation = {
     exploreMarketplace: 'Explorați Marketplace',
     appDetail: 'Detalii aplicație',
     account: 'Cont',
+    repots: 'Rapoarte',
   },
   userProfile: {
     settings: 'Setări',
@@ -448,6 +449,7 @@ const translation = {
         addPages: 'Adăugați pagini',
         preview: 'PREVIZUALIZARE',
       },
+      integratedAlert: 'Notion este integrat prin acreditare internă, nu este nevoie să reautorizați.',
     },
     website: {
       inactive: 'Inactiv',

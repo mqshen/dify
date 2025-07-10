@@ -256,6 +256,7 @@ const translation = {
     'loop-start': 'Początek pętli',
     'loop-end': 'Wyjście z pętli',
     'loop': 'Pętla',
+    report: 'Sprawozdanie',
   },
   blocksAbout: {
     'start': 'Zdefiniuj początkowe parametry uruchamiania przepływu pracy',
@@ -544,6 +545,7 @@ const translation = {
       advancedDependencies: 'Zaawansowane zależności',
       advancedDependenciesTip: 'Dodaj niektóre preładowane zależności, które zajmują więcej czasu lub nie są domyślnie wbudowane',
       searchDependencies: 'Wyszukaj zależności',
+      syncFunctionSignature: 'Synchronizuj podpis funkcji z kodem',
     },
     templateTransform: {
       inputVars: 'Zmienne wejściowe',
@@ -875,6 +877,13 @@ const translation = {
       breakConditionTip: 'Tylko zmienne w pętlach z warunkami zakończenia oraz zmienne konwersacyjne mogą być odwoływane.',
       currentLoopCount: 'Aktualna liczba pętli: {{count}}',
       deleteTitle: 'Usunąć węzeł pętli?',
+    },
+    report: {
+      outputVars: {
+        output: 'Generuj raport',
+        url: 'Adres URL raportu',
+      },
+      report: 'Sprawozdanie',
     },
   },
   tracing: {

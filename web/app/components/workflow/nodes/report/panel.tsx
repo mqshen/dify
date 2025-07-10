@@ -42,7 +42,7 @@ const Panel: FC<NodePanelProps<ReportNodeType>> = ({
         </Field> */}
         <Split />
         <Field
-          title={t(`${i18nPrefix}.knowledge`)}
+          title={t(`${i18nPrefix}.report`)}
           required
           operations={
             <div className='flex items-center space-x-1'>

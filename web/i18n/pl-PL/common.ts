@@ -154,6 +154,7 @@ const translation = {
     exploreMarketplace: 'Zapoznaj się z Marketplace',
     appDetail: 'Szczegóły aplikacji',
     account: 'klient',
+    repots: 'Raporty',
   },
   userProfile: {
     settings: 'Ustawienia',
@@ -461,6 +462,7 @@ const translation = {
         addPages: 'Dodaj strony',
         preview: 'PODGLĄD',
       },
+      integratedAlert: 'Notion jest zintegrowany za pomocą wewnętrznych poświadczeń, nie ma potrzeby ponownej autoryzacji.',
     },
     website: {
       active: 'Aktywny',

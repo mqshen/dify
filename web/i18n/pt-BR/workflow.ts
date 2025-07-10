@@ -256,6 +256,7 @@ const translation = {
     'loop-end': 'Sair do Loop',
     'loop-start': 'Início do Loop',
     'loop': 'Laço',
+    report: 'Relatório',
   },
   blocksAbout: {
     'start': 'Definir os parâmetros iniciais para iniciar um fluxo de trabalho',
@@ -544,6 +545,7 @@ const translation = {
       advancedDependencies: 'Dependências avançadas',
       advancedDependenciesTip: 'Adicione algumas dependências pré-carregadas que levam mais tempo para consumir ou não são padrão aqui',
       searchDependencies: 'Buscar dependências',
+      syncFunctionSignature: 'Assinatura da função de sincronização com o código',
     },
     templateTransform: {
       inputVars: 'Variáveis de entrada',
@@ -875,6 +877,13 @@ const translation = {
       breakConditionTip: 'Somente variáveis dentro de laços com condições de término e variáveis de conversa podem ser referenciadas.',
       currentLoop: 'Laço Atual',
       deleteDesc: 'A exclusão do nó de loop removerá todos os nós filhos',
+    },
+    report: {
+      outputVars: {
+        output: 'Gerar relatório',
+        url: 'URL do relatório',
+      },
+      report: 'Relatório',
     },
   },
   tracing: {

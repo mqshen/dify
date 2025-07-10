@@ -145,6 +145,7 @@ const translation = {
     exploreMarketplace: 'Marketplace 둘러보기',
     appDetail: '앱 세부정보',
     account: '계정',
+    repots: '보고서',
   },
   userProfile: {
     settings: '설정',
@@ -444,6 +445,7 @@ const translation = {
         addPages: '페이지 추가하기',
         preview: '미리보기',
       },
+      integratedAlert: 'Notion은 내부 자격 증명을 통해 통합되므로 다시 인증할 필요가 없습니다.',
     },
     website: {
       inactive: '게으른',

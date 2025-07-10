@@ -149,6 +149,7 @@ const translation = {
     newDataset: '建立知識庫',
     tools: '工具',
     exploreMarketplace: '探索 Marketplace',
+    repots: '報告',
   },
   userProfile: {
     settings: '設定',
@@ -448,6 +449,7 @@ const translation = {
         addPages: '新增頁面',
         preview: '預覽',
       },
+      integratedAlert: 'Notion 通過內部憑證集成，無需重新授權。',
     },
     website: {
       active: '積極',

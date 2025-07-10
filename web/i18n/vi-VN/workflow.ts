@@ -256,6 +256,7 @@ const translation = {
     'loop': 'Vòng',
     'loop-end': 'Thoát vòng lặp',
     'loop-start': 'Bắt đầu vòng lặp',
+    report: 'Báo cáo',
   },
   blocksAbout: {
     'start': 'Định nghĩa các tham số ban đầu để khởi chạy quy trình làm việc',
@@ -544,6 +545,7 @@ const translation = {
       advancedDependencies: 'Phụ thuộc nâng cao',
       advancedDependenciesTip: 'Thêm một số phụ thuộc được tải trước mà tốn nhiều thời gian hoặc không phải là mặc định tại đây',
       searchDependencies: 'Tìm kiếm phụ thuộc',
+      syncFunctionSignature: 'Đồng bộ hóa chữ ký chức năng với mã',
     },
     templateTransform: {
       inputVars: 'Biến đầu vào',
@@ -875,6 +877,13 @@ const translation = {
       loopVariables: 'Biến Lặp',
       error_one: '{{count}} Lỗi',
       loopNode: 'Nút Lặp',
+    },
+    report: {
+      outputVars: {
+        output: 'Tạo báo cáo',
+        url: 'URL báo cáo',
+      },
+      report: 'Báo cáo',
     },
   },
   tracing: {

@@ -881,6 +881,13 @@ const translation = {
         cancel: 'Cancel',
       },
     },
+    report: {
+      report: 'Report',
+      outputVars: {
+        output: 'Generate report',
+        url: 'Report URL',
+      },
+    },
   },
   tracing: {
     stopBy: 'Stop by {{user}}',

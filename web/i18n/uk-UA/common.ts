@@ -149,6 +149,7 @@ const translation = {
     exploreMarketplace: 'Дізнайтеся більше про Marketplace',
     appDetail: 'Деталі програми',
     account: 'Обліковий запис',
+    repots: 'Звіти',
   },
   userProfile: {
     settings: 'Налаштування',
@@ -449,6 +450,7 @@ const translation = {
         addPages: 'Додати сторінки',
         preview: 'ПЕРЕДПЕРЕГЛЯД',
       },
+      integratedAlert: 'Notion інтегрується за допомогою внутрішніх облікових даних, не потрібно повторно авторизуватися.',
     },
     website: {
       with: 'З',

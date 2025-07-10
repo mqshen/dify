@@ -153,6 +153,7 @@ const translation = {
     exploreMarketplace: 'Raziščite Marketplace',
     appDetail: 'Podrobnosti o aplikaciji',
     account: 'Račun',
+    repots: 'Poročila',
   },
   userProfile: {
     settings: 'Nastavitve',
@@ -648,6 +649,7 @@ const translation = {
       title: 'Pojem',
       changeAuthorizedPages: 'Spreminjanje pooblaščenih strani',
       sync: 'Sinhroniziranje',
+      integratedAlert: 'Notion je integriran prek notranjih poverilnic, ni potrebe po ponovni avtorizaciji.',
     },
     website: {
       active: 'Dejaven',

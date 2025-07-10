@@ -256,6 +256,7 @@ const translation = {
     'loop-start': 'شروع حلقه',
     'loop-end': 'خروج از حلقه',
     'loop': 'حلقه',
+    report: 'گزارش',
   },
   blocksAbout: {
     'start': 'پارامترهای اولیه برای راه‌اندازی جریان کار را تعریف کنید',
@@ -544,6 +545,7 @@ const translation = {
       advancedDependencies: 'وابستگی‌های پیشرفته',
       advancedDependenciesTip: 'برخی وابستگی‌های پیش‌بارگذاری شده که زمان بیشتری برای مصرف نیاز دارند یا به طور پیش‌فرض در اینجا موجود نیستند، اضافه کنید',
       searchDependencies: 'جستجوی وابستگی‌ها',
+      syncFunctionSignature: 'همگام سازی امضای تابع با کد',
     },
     templateTransform: {
       inputVars: 'متغیرهای ورودی',
@@ -875,6 +877,13 @@ const translation = {
       currentLoopCount: 'تعداد حلقه‌های فعلی: {{count}}',
       breakCondition: 'شرط خاتمه حلقه',
       breakConditionTip: 'فقط متغیرهای داخل حلقه‌ها با شرایط خاتمه و متغیرهای گفتگو می‌توانند مورد ارجاع قرار گیرند.',
+    },
+    report: {
+      outputVars: {
+        url: 'آدرس گزارش',
+        output: 'گزارش ایجاد کنید',
+      },
+      report: 'گزارش',
     },
   },
   tracing: {

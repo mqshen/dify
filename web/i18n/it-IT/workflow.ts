@@ -261,6 +261,7 @@ const translation = {
     'loop-end': 'Uscire dal ciclo',
     'loop-start': 'Inizio ciclo',
     'loop': 'Anello',
+    report: 'Rapporto',
   },
   blocksAbout: {
     'start': 'Definisci i parametri iniziali per l\'avvio di un flusso di lavoro',
@@ -561,6 +562,7 @@ const translation = {
       advancedDependenciesTip:
         'Aggiungi alcune dipendenze precaricate che richiedono più tempo per essere consumate o che non sono predefinite qui',
       searchDependencies: 'Cerca Dipendenze',
+      syncFunctionSignature: 'Sincronizzare la firma della funzione con il codice',
     },
     templateTransform: {
       inputVars: 'Variabili di Input',
@@ -900,6 +902,13 @@ const translation = {
       totalLoopCount: 'Conteggio totale dei cicli: {{count}}',
       exitConditionTip: 'Un nodo di ciclo ha bisogno di almeno una condizione di uscita.',
       error_other: '{{count}} Errori',
+    },
+    report: {
+      outputVars: {
+        output: 'Genera rapporto',
+        url: 'URL del rapporto',
+      },
+      report: 'Rapporto',
     },
   },
   tracing: {

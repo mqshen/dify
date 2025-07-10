@@ -254,6 +254,7 @@ const translation = {
     'loop-start': '循环开始',
     'loop': '循环',
     'loop-end': '退出循环',
+    report: '报告',
   },
   blocksAbout: {
     'start': '定义一个 workflow 流程启动的初始参数',
@@ -880,6 +881,13 @@ const translation = {
         install: '安装',
         cancel: '取消',
       },
+    },
+    report: {
+      outputVars: {
+        output: '生成报告',
+        url: '报告 URL',
+      },
+      report: '报告',
     },
   },
   tracing: {

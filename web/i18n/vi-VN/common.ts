@@ -149,6 +149,7 @@ const translation = {
     exploreMarketplace: 'Khám phá Marketplace',
     appDetail: 'Chi tiết ứng dụng',
     account: 'báo cáo',
+    repots: 'Báo cáo',
   },
   userProfile: {
     settings: 'Cài đặt',
@@ -448,6 +449,7 @@ const translation = {
         addPages: 'Thêm trang',
         preview: 'Xem trước',
       },
+      integratedAlert: 'Notion được tích hợp thông qua thông tin xác thực nội bộ, không cần ủy quyền lại.',
     },
     website: {
       title: 'Trang mạng',

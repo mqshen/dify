@@ -1,9 +1,8 @@
 'use client'
 
 import type { FC } from 'react'
-import React, { useRef } from 'react'
-import { useTranslation } from 'react-i18next'
-import MenuDialog from '@/app/components/header/account-setting/menu-dialog'
+import React from 'react'
+import ReportDialog from './report-dialog'
 import type { ValueSelector } from '@/app/components/workflow/types'
 import ReportUpdateForm from '@/app/components/reports/create'
 
@@ -20,17 +19,16 @@ const SelectReport: FC<ISelectReportProps> = ({
   onClose,
   onAddVariable,
 }) => {
-  const { t } = useTranslation()
   const handleChange = (key: string) => {
   };
 
   return (
-    <MenuDialog
+    <ReportDialog
       show={isShow}
       onClose={onClose}
     >
       <ReportUpdateForm nodeId={nodeId} onAddVariable={onAddVariable} onCancel={onClose}/>
-    </MenuDialog>
+    </ReportDialog>
   )
 }
 export default React.memo(SelectReport)

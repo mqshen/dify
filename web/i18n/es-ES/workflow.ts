@@ -256,6 +256,7 @@ const translation = {
     'loop-end': 'Salir del bucle',
     'loop': 'Bucle',
     'loop-start': 'Inicio del bucle',
+    report: 'Informe',
   },
   blocksAbout: {
     'start': 'Define los parámetros iniciales para iniciar un flujo de trabajo',
@@ -542,6 +543,7 @@ const translation = {
       advancedDependencies: 'Dependencias avanzadas',
       advancedDependenciesTip: 'Agrega algunas dependencias precargadas que consumen más tiempo o no son incorporadas por defecto aquí',
       searchDependencies: 'Buscar dependencias',
+      syncFunctionSignature: 'Firma de la función de sincronización con el código',
     },
     templateTransform: {
       inputVars: 'Variables de entrada',
@@ -875,6 +877,13 @@ const translation = {
       error_other: '{{count}} Errores',
       loopVariables: 'Variables de bucle',
       variableName: 'Nombre de Variable',
+    },
+    report: {
+      outputVars: {
+        output: 'Generar informe',
+        url: 'URL del informe',
+      },
+      report: 'Informe',
     },
   },
   tracing: {

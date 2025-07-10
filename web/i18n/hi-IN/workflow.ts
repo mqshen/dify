@@ -259,6 +259,7 @@ const translation = {
     'loop-end': 'लूप से बाहर निकलें',
     'loop': 'लूप',
     'loop-start': 'लूप प्रारंभ',
+    report: 'रिपोर्ट',
   },
   blocksAbout: {
     'start': 'वर्कफ़्लो लॉन्च करने के लिए प्रारंभिक पैरामीटर को परिभाषित करें',
@@ -558,6 +559,7 @@ const translation = {
       advancedDependenciesTip:
         'कुछ प्रीलोडेड निर्भरताएँ जोड़ें जिनका उपयोग करने में अधिक समय लगता है या जो डिफ़ॉल्ट निर्मित में नहीं हैं',
       searchDependencies: 'निर्भरताएँ खोजें',
+      syncFunctionSignature: 'कोड के साथ फ़ंक्शन हस्ताक्षर को सिंक करें',
     },
     templateTransform: {
       inputVars: 'इनपुट वेरिएबल्स',
@@ -895,6 +897,13 @@ const translation = {
       exitConditionTip: 'एक लूप नोड को कम से कम एक निकासी स्थिति की आवश्यकता होती है',
       loopVariables: 'लूप वेरियेबल्स',
       breakConditionTip: 'सिर्फ उन चर को संदर्भित किया जा सकता है जो लूप के भीतर हैं जिनमें समाप्ति की शर्तें और बातचीत के चर हैं।',
+    },
+    report: {
+      outputVars: {
+        output: 'रिपोर्ट तैयार करें',
+        url: 'रिपोर्ट URL',
+      },
+      report: 'रिपोर्ट',
     },
   },
   tracing: {

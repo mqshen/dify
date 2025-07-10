@@ -153,6 +153,7 @@ const translation = {
     exploreMarketplace: 'بازار را کاوش کنید',
     appDetail: 'جزئیات برنامه',
     account: 'حساب',
+    repots: 'گزارش',
   },
   userProfile: {
     settings: 'تنظیمات',
@@ -453,6 +454,7 @@ const translation = {
         addPages: 'افزودن صفحات',
         preview: 'پیش‌نمایش',
       },
+      integratedAlert: 'مفهوم از طریق اعتبار داخلی یکپارچه شده است، بدون نیاز به مجوز مجدد.',
     },
     website: {
       title: 'وب‌سایت',

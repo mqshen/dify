@@ -256,6 +256,7 @@ const translation = {
     'loop': 'Loop',
     'loop-end': 'Ieșire din buclă',
     'loop-start': 'Întreținere buclă',
+    report: 'Raport',
   },
   blocksAbout: {
     'start': 'Definiți parametrii inițiali pentru lansarea unui flux de lucru',
@@ -544,6 +545,7 @@ const translation = {
       advancedDependencies: 'Dependențe avansate',
       advancedDependenciesTip: 'Adăugați câteva dependențe preîncărcate care necesită mai mult timp pentru a consuma sau nu sunt integrate implicit aici',
       searchDependencies: 'Căutați dependențe',
+      syncFunctionSignature: 'Sincronizarea semnăturii funcției cu codul',
     },
     templateTransform: {
       inputVars: 'Variabile de intrare',
@@ -875,6 +877,13 @@ const translation = {
       breakCondition: 'Condiția de terminare a buclei',
       comma: ',',
       variableName: 'Nume Variabil',
+    },
+    report: {
+      outputVars: {
+        output: 'Generarea raportului',
+        url: 'Adresa URL a raportului',
+      },
+      report: 'Raport',
     },
   },
   tracing: {

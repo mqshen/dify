@@ -256,6 +256,7 @@ const translation = {
     'loop-end': 'Sortir de la boucle',
     'loop': 'Boucle',
     'loop-start': 'Début de boucle',
+    report: 'Rapport',
   },
   blocksAbout: {
     'start': 'Définir les paramètres initiaux pour lancer un flux de travail',
@@ -544,6 +545,7 @@ const translation = {
       advancedDependencies: 'Dépendances avancées',
       advancedDependenciesTip: 'Ajoutez quelques dépendances préchargées qui prennent plus de temps à consommer ou ne sont pas par défaut ici',
       searchDependencies: 'Rechercher des dépendances',
+      syncFunctionSignature: 'Synchroniser la signature de la fonction avec le code',
     },
     templateTransform: {
       inputVars: 'Variables de saisie',
@@ -875,6 +877,13 @@ const translation = {
       breakConditionTip: 'Seules les variables dans les boucles avec des conditions de terminaison et les variables de conversation peuvent être référencées.',
       loopVariables: 'Variables de boucle',
       deleteTitle: 'Supprimer le nœud de boucle ?',
+    },
+    report: {
+      outputVars: {
+        url: 'URL du rapport',
+        output: 'Générer un rapport',
+      },
+      report: 'Rapport',
     },
   },
   tracing: {

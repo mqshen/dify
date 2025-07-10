@@ -256,6 +256,7 @@ const translation = {
     'loop-start': '循環開始',
     'loop': '循環',
     'loop-end': '退出循環',
+    report: '報告',
   },
   blocksAbout: {
     'start': '定義一個 workflow 流程啟動的參數',
@@ -876,6 +877,13 @@ const translation = {
       deleteDesc: '刪除循環節點將移除所有子節點',
       setLoopVariables: '在迴圈範圍內設置變數',
       deleteTitle: '刪除循環節點嗎？',
+    },
+    report: {
+      outputVars: {
+        url: '報告 URL',
+        output: '生成報告',
+      },
+      report: '報告',
     },
   },
   tracing: {

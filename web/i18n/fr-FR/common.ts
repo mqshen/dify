@@ -149,6 +149,7 @@ const translation = {
     exploreMarketplace: 'Explorer Marketplace',
     appDetail: 'Détails de l\'application',
     account: 'Compte',
+    repots: 'Rapports',
   },
   userProfile: {
     settings: 'Paramètres',
@@ -448,6 +449,7 @@ const translation = {
         addPages: 'Ajouter des pages',
         preview: 'APERÇU',
       },
+      integratedAlert: 'Notion est intégré via des informations d’identification internes, il n’est pas nécessaire de ré-autoriser.',
     },
     website: {
       configuredCrawlers: 'Robots d’exploration configurés',

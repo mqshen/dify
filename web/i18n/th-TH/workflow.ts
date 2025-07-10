@@ -256,6 +256,7 @@ const translation = {
     'loop': 'ลูป',
     'loop-start': 'เริ่มลูป',
     'loop-end': 'ออกจากลูป',
+    report: 'รายงาน',
   },
   blocksAbout: {
     'start': 'กําหนดพารามิเตอร์เริ่มต้นสําหรับการเปิดใช้เวิร์กโฟลว์',
@@ -544,6 +545,7 @@ const translation = {
       advancedDependencies: 'การพึ่งพาขั้นสูง',
       advancedDependenciesTip: 'เพิ่มการพึ่งพาที่โหลดไว้ล่วงหน้าซึ่งใช้เวลามากขึ้นในการใช้หรือไม่ใช่ค่าเริ่มต้นในตัวที่นี่',
       searchDependencies: 'การพึ่งพาการค้นหา',
+      syncFunctionSignature: 'ซิงค์ลายเซ็นฟังก์ชันกับโค้ด',
     },
     templateTransform: {
       inputVars: 'ตัวแปรอินพุต',
@@ -874,6 +876,13 @@ const translation = {
       variableName: 'ชื่อ ตัวแปร',
       exitConditionTip: 'โหนดลูปต้องมีเงื่อนไขการออกอย่างน้อยหนึ่งเงื่อนไข',
       breakConditionTip: 'แค่ตัวแปรภายในลูปที่มีเงื่อนไขการสิ้นสุดและตัวแปรสำหรับการสนทนาเท่านั้นที่สามารถอ้างอิงได้.',
+    },
+    report: {
+      outputVars: {
+        url: 'URL รายงาน',
+        output: 'สร้างรายงาน',
+      },
+      report: 'รายงาน',
     },
   },
   tracing: {
