@@ -1,7 +1,7 @@
 import i18next from "i18next"
 import { useEffect, useContext } from "react"
 import { useToastContext } from '@/app/components/base/toast'
-import { API_PREFIX, REPORT_URL_PREFIX } from '@/config'
+import { REPORT_CALLBACK_URL_PREFIX, REPORT_URL_PREFIX } from '@/config'
 import type {WordReport} from '@/app/components/workflow/nodes/report/types'
 
 declare global {
@@ -17,7 +17,7 @@ export default function Word({ data }: {data: WordReport}) {
     // 本地调试
     // const host = 'http://192.168.106.120:3002'
     // const backUrl = `${basePath}/console/api/reports/callback`
-    const backUrl = `${API_PREFIX}/reports/callback`
+    const backUrl = `${REPORT_CALLBACK_URL_PREFIX}/reports/callback`
 
     const editorConfig = {
         // 编辑器宽度
