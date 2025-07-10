@@ -31,6 +31,7 @@ COPY --from=packages /app/web/ .
 COPY . .
 
 ENV NODE_OPTIONS="--max-old-space-size=4096"
+ENV NEXT_PUBLIC_REPORT_URL_PREFIX=http://192.168.156.100:8701
 RUN pnpm build
 
 
