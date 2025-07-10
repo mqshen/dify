@@ -71,6 +71,10 @@ class KnowledgeRetrievalNode(LLMNode):
     _node_data_cls = KnowledgeRetrievalNodeData  # type: ignore
     _node_type = NodeType.KNOWLEDGE_RETRIEVAL
 
+    @classmethod
+    def version(cls):
+        return "1"
+
     def _run(self) -> NodeRunResult:  # type: ignore
         node_data = cast(KnowledgeRetrievalNodeData, self.node_data)
         # extract variables
@@ -486,6 +490,9 @@ class KnowledgeRetrievalNode(LLMNode):
     def _process_metadata_filter_func(
         self, sequence: int, condition: str, metadata_name: str, value: Optional[Any], filters: list
     ):
+        if value is None:
+            return
+
         key = f"{metadata_name}_{sequence}"
         key_value = f"{metadata_name}_{sequence}_value"
         match condition:

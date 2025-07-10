@@ -216,3 +216,4 @@ mise.toml
 .roo/
 .env.development
 .env.product
+api/.env.backup
