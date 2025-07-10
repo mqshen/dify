@@ -23,9 +23,6 @@ def upgrade():
         batch_op.add_column(sa.Column('node_id', models.types.StringUUID(), nullable=False))
         batch_op.create_unique_constraint('report_node_id_idx', ['node_id'])
 
-    with op.batch_alter_table('workflow_runs', schema=None) as batch_op:
-        batch_op.drop_column('sequence_number')
-
     # ### end Alembic commands ###
 
 
