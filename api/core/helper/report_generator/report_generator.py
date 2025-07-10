@@ -32,15 +32,13 @@ class DocxTemplateRender(object):
 
         # 采用找key 方式
         for k1, v1 in template_def.items():
-            # k1 = replace_info[0]
-            # v1 = replace_info[1]
             for table in doc.tables:
                 for i, row in enumerate(table.rows):
                     for j, cell in enumerate(row.cells):
                         if k1 in cell.text:
                             for one in cell.paragraphs:
                                 if k1 in one.text:
-                                    new_text = one.text.replace(k1, v1)
+                                    new_text = one.text.replace("{{" + k1 + "}}", v1)
                                     one.runs[0].text = new_text
                                     for r_index, r in enumerate(one.runs):
                                         if r_index == 0:
@@ -114,7 +112,7 @@ class DocxTemplateRender(object):
 
                     for i in range(s, e):
                         _k, _v = replace_mapping[i - s]
-                        p.runs[i].text = p.runs[i].text.replace(_k, _v)
+                        p.runs[i].text = p.runs[i].text.replace("{{" + _k + "}}", _v)
 
 
         return doc
