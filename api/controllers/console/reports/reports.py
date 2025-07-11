@@ -5,6 +5,7 @@ from flask_restful import Resource, marshal, reqparse
 from werkzeug.exceptions import Forbidden
 
 import services
+from configs import dify_config
 from controllers.console import api
 from controllers.console.reports.error import DocumentNameDuplicateError
 from controllers.console.wraps import (
@@ -100,8 +101,8 @@ class ReportApi(Resource):
             }, 200
         return {
             "node_id": node_id,
-            "name": "",
-            "url": "",
+            "name": "empty",
+            "url": f"{dify_config.REPORT_SERVER_URL}/empty.docx",
         }, 200
 
 

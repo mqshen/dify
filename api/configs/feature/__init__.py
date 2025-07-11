@@ -873,6 +873,11 @@ class AccountConfig(BaseSettings):
         default=False,
     )
 
+class ReportConfig(BaseSettings):
+    REPORT_SERVER_URL: str = Field(
+        description="report server url address",
+        default="",
+    )
 
 class FeatureConfig(
     # place the configs in alphabet order
@@ -907,5 +912,6 @@ class FeatureConfig(
     # hosted services config
     HostedServiceConfig,
     CeleryBeatConfig,
+    ReportConfig,
 ):
     pass
