@@ -73,7 +73,7 @@ const Header = () => {
           {!isCurrentWorkspaceDatasetOperator && <ExploreNav className={navClassName} />}
           {!isCurrentWorkspaceDatasetOperator && <AppNav />}
           {(isCurrentWorkspaceEditor || isCurrentWorkspaceDatasetOperator) && <DatasetNav />}
-          {(isCurrentWorkspaceEditor || isCurrentWorkspaceDatasetOperator) && <ReportNav />}
+          {/* {(isCurrentWorkspaceEditor || isCurrentWorkspaceDatasetOperator) && <ReportNav />} */}
           {!isCurrentWorkspaceDatasetOperator && <ToolsNav className={navClassName} />}
         </div>
       </div>

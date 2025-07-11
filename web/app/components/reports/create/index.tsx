@@ -116,11 +116,11 @@ export default function ReportWordEdit({
       <div className="flex size-full">
         <div ref={iframeRef} className="relative flex-1 border bg-accent">
           <div className="z-10 flex gap-4 pt-[8px] px-8">
-            <div className="grow">
+            <div className="grow flex">
               <VariablePicker
                 nodeId={nodeId}
                 isShowNodeName={true}
-                isAddBtnTrigger={true}
+                isAddBtnTrigger={false}
                 className="grow"
                 onChange={handleVarReferenceChange}
               />
