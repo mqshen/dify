@@ -891,7 +891,12 @@ class AdvancedChatAppGenerateTaskPipeline:
                             })
                 
                 if chunks_data:
-                    chunks_json = json.dumps(chunks_data).replace('"', '&quot;')
+                    # 将chunks数据转换为JSON，确保中文字符正确编码
+                    chunks_json = json.dumps(chunks_data, ensure_ascii=False)
+                    # 转义HTML属性中的特殊字符
+                    chunks_json = (chunks_json.replace('"', '&quot;')
+                                  .replace('<', '&lt;')
+                                  .replace('>', '&gt;'))
                     remaining_html = f' <hint-icon data-chunks="{chunks_json}"></hint-icon>'
                     logger.info(
                         f"最终区域引用提示: 位置({region_start_pos}-{region_end_pos}), "
@@ -1469,8 +1474,12 @@ class AdvancedChatAppGenerateTaskPipeline:
                                                         })
                                             
                                             if chunks_data:
-                                                # 将chunks数据转换为JSON并转义引号
-                                                chunks_json = json.dumps(chunks_data).replace('"', '&quot;')
+                                                # 将chunks数据转换为JSON，确保中文字符正确编码
+                                                chunks_json = json.dumps(chunks_data, ensure_ascii=False)
+                                                # 转义HTML属性中的特殊字符
+                                                chunks_json = (chunks_json.replace('"', '&quot;')
+                                                              .replace('<', '&lt;')
+                                                              .replace('>', '&gt;'))
                                                 # 在当前位置插入hint-icon标记
                                                 processed_text = processed_text.rstrip()  # 移除末尾空白
                                                 processed_text += (
