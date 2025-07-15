@@ -1,6 +1,8 @@
 
 from typing import IO
+
 from docx import Document
+
 
 def find_lcs(str1, str2):
     lstr1 = len(str1)
@@ -18,8 +20,8 @@ def find_lcs(str1, str2):
 
     return str1[p - maxNum: p], maxNum
 
-class DocxTemplateRender(object):
-    def __init__(self, filepath: str = None, file_content: IO[bytes] = None):
+class DocxTemplateRender:
+    def __init__(self, filepath: str | None = None, file_content: IO[bytes] | None = None):
         self.filepath = filepath
         self.file_content = file_content
         if self.filepath:

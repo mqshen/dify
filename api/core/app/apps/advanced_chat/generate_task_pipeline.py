@@ -169,7 +169,7 @@ class AdvancedChatAppGenerateTaskPipeline:
         self._workflow_run_id: str = ""
         self._draft_var_saver_factory = draft_var_saver_factory
 
-        # 提示图标功能相关属性
+        # 引用提示功能相关属性
         self._accumulated_text = ""
         self._in_code_block = False
         self._in_table = False
@@ -183,6 +183,10 @@ class AdvancedChatAppGenerateTaskPipeline:
         self._region_buffer = []  # 区域缓冲区，存储最近的3-5行
         self._region_has_match = False  # 当前区域是否有匹配的行
         self._current_region_size = self._generate_random_region_size()  # 当前区域大小（动态随机）
+
+        # 新增：位置信息和引用提示收集
+        self._citation_hints = []  # 引用提示列表
+        self._current_position = 0  # 当前文本位置
 
     def process(self) -> Union[ChatbotAppBlockingResponse, Generator[ChatbotAppStreamResponse, None, None]]:
         """
@@ -663,8 +667,8 @@ class AdvancedChatAppGenerateTaskPipeline:
                 if tts_publisher:
                     tts_publisher.publish(queue_message)
 
-                # 处理带引用提示的文本
-                processed_delta_text = self._process_text_with_hints(delta_text)
+                # 处理文本并收集引用提示位置信息
+                processed_delta_text = self._process_text_with_citation_metadata(delta_text)
                 self._task_state.answer += processed_delta_text
                 yield self._message_cycle_manager.message_to_stream_response(
                     answer=processed_delta_text,
@@ -714,7 +718,17 @@ class AdvancedChatAppGenerateTaskPipeline:
         message = self._get_message(session=session)
         message.answer = self._task_state.answer
         message.provider_response_latency = time.perf_counter() - self._base_task_pipeline._start_at
-        message.message_metadata = self._task_state.metadata.model_dump_json()
+        
+        # 处理剩余的区域缓冲区
+        self._process_remaining_region_buffer()
+        
+        # 在保存前将citation_hints添加到metadata中
+        metadata_dict = self._task_state.metadata.model_dump()
+        if self._citation_hints:
+            metadata_dict['citation_hints'] = self._citation_hints
+            logger.info(f"保存消息时添加引用提示: {len(self._citation_hints)} 个提示")
+        
+        message.message_metadata = json.dumps(metadata_dict)
         message_files = [
             MessageFile(
                 message_id=message.id,
@@ -759,6 +773,14 @@ class AdvancedChatAppGenerateTaskPipeline:
 
         if self._task_state.metadata.annotation_reply:
             del extras["annotation_reply"]
+
+        # 处理剩余的区域缓冲区
+        self._process_remaining_region_buffer()
+        
+        # 添加citation_hints到流式响应的metadata中
+        if self._citation_hints:
+            extras['citation_hints'] = self._citation_hints
+            logger.info(f"流式响应中添加引用提示: {len(self._citation_hints)} 个提示")
 
         return MessageEndStreamResponse(
             task_id=self._application_generate_entity.task_id,
@@ -818,12 +840,7 @@ class AdvancedChatAppGenerateTaskPipeline:
         检查是否应该添加提示图标，复用'引用和归属'开关
         :return: True if should add hint icons
         """
-        show_retrieve_source = self._application_generate_entity.app_config.additional_features.show_retrieve_source
-        logger.debug(f"[HINT_ICONS_DEBUG] show_retrieve_source config: {show_retrieve_source}")
-        features = self._application_generate_entity.app_config.additional_features
-        logger.debug(f"[HINT_ICONS_DEBUG] app_config.additional_features: {features}")
-
-        return show_retrieve_source
+        return self._application_generate_entity.app_config.additional_features.show_retrieve_source
 
     def _generate_random_region_size(self) -> int:
         """生成3-5之间的随机区域大小"""
@@ -839,7 +856,47 @@ class AdvancedChatAppGenerateTaskPipeline:
         self._region_buffer = []
         self._region_has_match = False
         self._current_region_size = self._generate_random_region_size()
-        logger.info(f"重置区域缓冲区，新区域大小: {self._current_region_size}")
+
+    def _process_remaining_region_buffer(self):
+        """处理剩余的区域缓冲区（在消息结束时调用）"""
+        if self._region_buffer and self._region_has_match:
+            # 为剩余区域生成引用提示
+            region_start_pos = self._region_buffer[0]["start_pos"]
+            region_end_pos = self._region_buffer[-1]["end_pos"]
+            
+            # 收集区域内所有相关chunks
+            all_chunks_with_scores = []
+            for line_info in self._region_buffer:
+                line_chunks = self._find_relevant_chunks(line_info["text"])
+                all_chunks_with_scores.extend(line_chunks)
+            
+            if all_chunks_with_scores:
+                # 去重并按相似度排序
+                unique_chunks = {}
+                for chunk, score in all_chunks_with_scores:
+                    if chunk.segment_id not in unique_chunks or unique_chunks[chunk.segment_id][1] < score:
+                        unique_chunks[chunk.segment_id] = (chunk, score)
+                
+                sorted_chunks = sorted(unique_chunks.values(), key=lambda x: x[1], reverse=True)
+                top_chunks = sorted_chunks[:MAX_CITATIONS_PER_SENTENCE]
+                
+                hint_data = {
+                    "text_range": {"start": region_start_pos, "end": region_end_pos},
+                    "chunk_ids": [chunk.segment_id for chunk, _ in top_chunks if chunk.segment_id],
+                    "confidence": max(score for _, score in top_chunks) if top_chunks else 0.0
+                }
+                
+                if hint_data["chunk_ids"]:
+                    self._citation_hints.append(hint_data)
+                    logger.info(
+                        f"最终区域引用提示: 位置({region_start_pos}-{region_end_pos}), "
+                        f"区域大小: {len(self._region_buffer)}, chunks: {hint_data['chunk_ids']}, "
+                        f"相似度: {hint_data['confidence']:.3f}"
+                    )
+        
+        # 清空区域缓冲区
+        self._region_buffer = []
+        self._region_has_match = False
 
     def _clean_content_for_similarity(self, content: str) -> str:
         """
@@ -1299,4 +1356,108 @@ class AdvancedChatAppGenerateTaskPipeline:
         else:
             # 没有换行符，累积文本
             self._accumulated_text += delta_text
+            return delta_text
+
+    def _process_text_with_citation_metadata(self, delta_text: str) -> str:
+        """
+        处理流式文本，收集引用提示的位置元数据（替换原有的HTML生成逻辑）
+        :param delta_text: 增量文本
+        :return: 原始文本（不包含HTML标记）
+        """
+        if not self._should_add_hint_icons():
+            self._current_position += len(delta_text)
+            return delta_text
+
+        if "\n" in delta_text:
+            # 处理包含换行符的文本
+            processed_text = ""
+            parts = delta_text.split("\n")
+
+            for i, part in enumerate(parts):
+                if i < len(parts) - 1:  # 不是最后一部分（完整行）
+                    combined_line = self._accumulated_text + part
+                    line_start_pos = self._current_position - len(self._accumulated_text)
+                    line_end_pos = self._current_position + len(part)
+
+                    # 检查代码块状态
+                    if combined_line.strip().startswith("```"):
+                        self._in_code_block = not self._in_code_block
+                        self._reset_region_buffer()
+                    elif (not self._in_code_block and 
+                          not self._is_table_row(combined_line) and 
+                          not self._is_simple_code_line(combined_line)):
+                        # 对于普通文本行，使用区域累积逻辑
+                        if combined_line.strip():  # 非空行
+                            # 将行添加到区域缓冲区
+                            line_data = {
+                                "text": combined_line.strip(),
+                                "start_pos": line_start_pos,
+                                "end_pos": line_end_pos
+                            }
+                            self._region_buffer.append(line_data)
+                            
+                            # 检查当前行是否有匹配的chunks
+                            relevant_chunks_with_scores = self._find_relevant_chunks(combined_line.strip())
+                            if relevant_chunks_with_scores:
+                                self._region_has_match = True
+                            
+                            # 检查是否达到区域大小限制
+                            if len(self._region_buffer) >= self._current_region_size:
+                                if self._region_has_match:
+                                    # 为整个区域生成一个引用提示（在区域末尾）
+                                    region_start_pos = self._region_buffer[0]["start_pos"]
+                                    region_end_pos = self._region_buffer[-1]["end_pos"]
+                                    
+                                    # 收集区域内所有相关chunks
+                                    all_chunks_with_scores = []
+                                    for line_info in self._region_buffer:
+                                        line_chunks = self._find_relevant_chunks(line_info["text"])
+                                        all_chunks_with_scores.extend(line_chunks)
+                                    
+                                    if all_chunks_with_scores:
+                                        # 去重并按相似度排序
+                                        unique_chunks = {}
+                                        for chunk, score in all_chunks_with_scores:
+                                            if (chunk.segment_id not in unique_chunks or 
+                                            unique_chunks[chunk.segment_id][1] < score):
+                                                unique_chunks[chunk.segment_id] = (chunk, score)
+                                        
+                                        sorted_chunks = sorted(unique_chunks.values(), key=lambda x: x[1], reverse=True)
+                                        top_chunks = sorted_chunks[:MAX_CITATIONS_PER_SENTENCE]
+                                        
+                                        hint_data = {
+                                            "text_range": {"start": region_start_pos, "end": region_end_pos},
+                                            "chunk_ids": [
+                                                chunk.segment_id for chunk, _ in top_chunks 
+                                                if chunk.segment_id
+                                            ],
+                                            "confidence": max(score for _, score in top_chunks) if top_chunks else 0.0
+                                        }
+                                        
+                                        if hint_data["chunk_ids"]:
+                                            self._citation_hints.append(hint_data)
+                                            logger.info(
+                                                f"区域引用提示: 位置({region_start_pos}-{region_end_pos}), "
+                                                f"区域大小: {len(self._region_buffer)}, "
+                                                f"chunks: {hint_data['chunk_ids']}, "
+                                                f"相似度: {hint_data['confidence']:.3f}"
+                                            )
+                                
+                                # 重置区域缓冲区
+                                self._reset_region_buffer()
+
+                    processed_text += part + "\n"
+                    self._current_position += len(part) + 1
+                    self._accumulated_text = ""
+                else:
+                    # 最后一部分，累积起来
+                    processed_text += part
+                    self._accumulated_text = part
+                    self._current_position += len(part)
+
+            return processed_text
+        else:
+            # 没有换行符，累积文本
+            self._accumulated_text += delta_text
+            self._current_position += len(delta_text)
             return delta_text
