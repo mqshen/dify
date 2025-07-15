@@ -684,6 +684,15 @@ class AdvancedChatAppGenerateTaskPipeline:
                 if not graph_runtime_state:
                     raise ValueError("graph runtime state not initialized.")
 
+                # 处理剩余的区域缓冲区并获取HTML标记
+                remaining_html = self._process_remaining_region_buffer()
+                if remaining_html:
+                    self._task_state.answer += remaining_html
+                    yield self._message_cycle_manager.message_to_stream_response(
+                        answer=remaining_html,
+                        message_id=self._message_id,
+                    )
+
                 output_moderation_answer = self._base_task_pipeline._handle_output_moderation_when_task_finished(
                     self._task_state.answer
                 )
@@ -719,16 +728,8 @@ class AdvancedChatAppGenerateTaskPipeline:
         message.answer = self._task_state.answer
         message.provider_response_latency = time.perf_counter() - self._base_task_pipeline._start_at
         
-        # 处理剩余的区域缓冲区
-        self._process_remaining_region_buffer()
-        
-        # 在保存前将citation_hints添加到metadata中
-        metadata_dict = self._task_state.metadata.model_dump()
-        if self._citation_hints:
-            metadata_dict['citation_hints'] = self._citation_hints
-            logger.info(f"保存消息时添加引用提示: {len(self._citation_hints)} 个提示")
-        
-        message.message_metadata = json.dumps(metadata_dict)
+        # 直接保存metadata，不再需要添加citation_hints
+        message.message_metadata = self._task_state.metadata.model_dump_json()
         message_files = [
             MessageFile(
                 message_id=message.id,
@@ -773,14 +774,6 @@ class AdvancedChatAppGenerateTaskPipeline:
 
         if self._task_state.metadata.annotation_reply:
             del extras["annotation_reply"]
-
-        # 处理剩余的区域缓冲区
-        self._process_remaining_region_buffer()
-        
-        # 添加citation_hints到流式响应的metadata中
-        if self._citation_hints:
-            extras['citation_hints'] = self._citation_hints
-            logger.info(f"流式响应中添加引用提示: {len(self._citation_hints)} 个提示")
 
         return MessageEndStreamResponse(
             task_id=self._application_generate_entity.task_id,
@@ -858,7 +851,9 @@ class AdvancedChatAppGenerateTaskPipeline:
         self._current_region_size = self._generate_random_region_size()
 
     def _process_remaining_region_buffer(self):
-        """处理剩余的区域缓冲区（在消息结束时调用）"""
+        """处理剩余的区域缓冲区，返回HTML标记"""
+        remaining_html = ""
+        
         if self._region_buffer and self._region_has_match:
             # 为剩余区域生成引用提示
             region_start_pos = self._region_buffer[0]["start_pos"]
@@ -880,23 +875,34 @@ class AdvancedChatAppGenerateTaskPipeline:
                 sorted_chunks = sorted(unique_chunks.values(), key=lambda x: x[1], reverse=True)
                 top_chunks = sorted_chunks[:MAX_CITATIONS_PER_SENTENCE]
                 
-                hint_data = {
-                    "text_range": {"start": region_start_pos, "end": region_end_pos},
-                    "chunk_ids": [chunk.segment_id for chunk, _ in top_chunks if chunk.segment_id],
-                    "confidence": max(score for _, score in top_chunks) if top_chunks else 0.0
-                }
+                # 构建chunks数据
+                chunks_data = []
+                if hasattr(self._task_state.metadata, 'retriever_resources'):
+                    chunk_map = {r.segment_id: r for r in self._task_state.metadata.retriever_resources}
+                    for chunk, _ in top_chunks:
+                        if chunk.segment_id in chunk_map:
+                            resource = chunk_map[chunk.segment_id]
+                            chunks_data.append({
+                                "segment_id": resource.segment_id,
+                                "document_name": resource.document_name,
+                                "content": resource.content,
+                                "score": resource.score,
+                                "dataset_name": resource.dataset_name
+                            })
                 
-                if hint_data["chunk_ids"]:
-                    self._citation_hints.append(hint_data)
+                if chunks_data:
+                    chunks_json = json.dumps(chunks_data).replace('"', '&quot;')
+                    remaining_html = f' <hint-icon data-chunks="{chunks_json}"></hint-icon>'
                     logger.info(
                         f"最终区域引用提示: 位置({region_start_pos}-{region_end_pos}), "
-                        f"区域大小: {len(self._region_buffer)}, chunks: {hint_data['chunk_ids']}, "
-                        f"相似度: {hint_data['confidence']:.3f}"
+                        f"区域大小: {len(self._region_buffer)}, chunks: {[c['segment_id'] for c in chunks_data]}"
                     )
         
         # 清空区域缓冲区
         self._region_buffer = []
         self._region_has_match = False
+        
+        return remaining_html
 
     def _clean_content_for_similarity(self, content: str) -> str:
         """
@@ -1360,9 +1366,9 @@ class AdvancedChatAppGenerateTaskPipeline:
 
     def _process_text_with_citation_metadata(self, delta_text: str) -> str:
         """
-        处理流式文本，收集引用提示的位置元数据（替换原有的HTML生成逻辑）
+        处理流式文本，直接在文本中插入引用提示标记
         :param delta_text: 增量文本
-        :return: 原始文本（不包含HTML标记）
+        :return: 包含引用提示标记的文本
         """
         if not self._should_add_hint_icons():
             self._current_position += len(delta_text)
@@ -1442,11 +1448,42 @@ class AdvancedChatAppGenerateTaskPipeline:
                                                 f"chunks: {hint_data['chunk_ids']}, "
                                                 f"相似度: {hint_data['confidence']:.3f}"
                                             )
+                                            
+                                            # 直接在文本中插入引用提示标记
+                                            # 使用retriever_resources中的数据构建chunks数据
+                                            chunks_data = []
+                                            if hasattr(self._task_state.metadata, 'retriever_resources'):
+                                                chunk_map = {
+                                                    r.segment_id: r 
+                                                    for r in self._task_state.metadata.retriever_resources
+                                                }
+                                                for chunk_id in hint_data["chunk_ids"]:
+                                                    if chunk_id in chunk_map:
+                                                        resource = chunk_map[chunk_id]
+                                                        chunks_data.append({
+                                                            "segment_id": resource.segment_id,
+                                                            "document_name": resource.document_name,
+                                                            "content": resource.content,
+                                                            "score": resource.score,
+                                                            "dataset_name": resource.dataset_name
+                                                        })
+                                            
+                                            if chunks_data:
+                                                # 将chunks数据转换为JSON并转义引号
+                                                chunks_json = json.dumps(chunks_data).replace('"', '&quot;')
+                                                # 在当前位置插入hint-icon标记
+                                                processed_text = processed_text.rstrip()  # 移除末尾空白
+                                                processed_text += (
+                                                    f' <hint-icon data-chunks="{chunks_json}"></hint-icon>\n'
+                                                )
                                 
                                 # 重置区域缓冲区
                                 self._reset_region_buffer()
 
-                    processed_text += part + "\n"
+                    # 如果没有添加hint-icon，正常添加换行符
+                    if not processed_text.rstrip().endswith('</hint-icon>'):
+                        processed_text += part + "\n"
+                    
                     self._current_position += len(part) + 1
                     self._accumulated_text = ""
                 else:
