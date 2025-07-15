@@ -217,3 +217,9 @@ mise.toml
 .env.development
 .env.product
 api/.env.backup
+
+# jojo directory with scripts and configurations
+jojo/
+
+# Claude Code configuration file
+CLAUDE.md
