@@ -20,6 +20,7 @@ import {
   ThinkBlock,
   VideoBlock,
 } from '@/app/components/base/markdown-blocks'
+import HintIcon from '@/app/components/base/chat/chat/answer/hint-icon'
 
 /**
  * @fileoverview Main Markdown rendering component.
@@ -29,10 +30,17 @@ import {
  * are noted in their respective files if applicable.
  */
 
+// 预处理 hint-icon 标签确保正确解析
+const preprocessHintIcon = (content: string) => {
+  // 确保 hint-icon 标签格式正确
+  return content.replace(/<hint-icon([^>]*)><\/hint-icon>/g, '<hint-icon$1></hint-icon>')
+}
+
 export function Markdown(props: { content: string; className?: string; customDisallowedElements?: string[] }) {
   const latexContent = flow([
     preprocessThinkTag,
     preprocessLaTeX,
+    preprocessHintIcon,
   ])(props.content)
 
   return (
@@ -53,7 +61,7 @@ export function Markdown(props: { content: string; className?: string; customDis
                 if (node.type === 'element' && node.properties?.ref)
                   delete node.properties.ref
 
-                if (node.type === 'element' && !/^[a-z][a-z0-9]*$/i.test(node.tagName)) {
+                if (node.type === 'element' && !/^[a-z][a-z0-9-]*$/i.test(node.tagName) && node.tagName !== 'hint-icon') {
                   node.type = 'text'
                   node.value = `<${node.tagName}`
                 }
@@ -66,7 +74,7 @@ export function Markdown(props: { content: string; className?: string; customDis
           },
         ]}
         urlTransform={customUrlTransform}
-        disallowedElements={['iframe', 'head', 'html', 'meta', 'link', 'style', 'body', ...(props.customDisallowedElements || [])]}
+        disallowedElements={['iframe', 'head', 'html', 'meta', 'link', 'style', 'body', ...(props.customDisallowedElements || [])].filter(el => el !== 'hint-icon')}
         components={{
           code: CodeBlock,
           img: Img,
@@ -78,6 +86,7 @@ export function Markdown(props: { content: string; className?: string; customDis
           form: MarkdownForm,
           script: ScriptBlock as any,
           details: ThinkBlock,
+          'hint-icon': HintIcon,
         }}
       >
         {/* Markdown detect has problem. */}
