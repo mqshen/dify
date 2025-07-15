@@ -30,18 +30,78 @@ import HintIcon from '@/app/components/base/chat/chat/answer/hint-icon'
  * are noted in their respective files if applicable.
  */
 
-// 预处理 hint-icon 标签确保正确解析
-const preprocessHintIcon = (content: string) => {
-  // 确保 hint-icon 标签格式正确
-  return content.replace(/<hint-icon([^>]*)><\/hint-icon>/g, '<hint-icon$1></hint-icon>')
+// 引用提示数据类型定义
+type CitationHint = {
+  text_range: { start: number; end: number }
+  chunk_ids: string[]
+  confidence: number
 }
 
-export function Markdown(props: { content: string; className?: string; customDisallowedElements?: string[] }) {
+type RetrieverResource = {
+  segment_id: string
+  document_name: string
+  content: string
+  score: number
+  dataset_name?: string
+}
+
+// 基于位置信息动态插入引用提示
+const processContentWithCitations = (
+  text: string,
+  hints: CitationHint[] = [],
+  retrieverResources: RetrieverResource[] = [],
+) => {
+  if (!hints?.length)
+    return text
+
+  // 创建chunk查找映射
+  const chunkMap = new Map(
+    retrieverResources.map(resource => [resource.segment_id, resource]),
+  )
+
+  // 按位置排序（从后往前处理，避免位置偏移）
+  const sortedHints = [...hints].sort((a, b) => b.text_range.start - a.text_range.start)
+
+  let processedText = text
+  sortedHints.forEach((hint) => {
+    const { start, end } = hint.text_range
+
+    // 从retriever_resources中获取chunk详情
+    const chunksData = hint.chunk_ids
+      .map(id => chunkMap.get(id))
+      .filter(Boolean)
+
+    if (chunksData.length === 0) return // 如果没有找到对应的chunk数据，跳过
+
+    const beforeText = processedText.slice(0, end)
+    const afterText = processedText.slice(end)
+
+    // 插入引用提示标记
+    const chunksJson = JSON.stringify(chunksData).replace(/"/g, '&quot;')
+    processedText = `${beforeText
+      } <hint-icon data-chunks="${chunksJson}"></hint-icon>${
+      afterText}`
+  })
+
+  return processedText
+}
+
+export function Markdown(props: {
+  content: string;
+  className?: string;
+  customDisallowedElements?: string[];
+  citationHints?: CitationHint[];
+  retrieverResources?: RetrieverResource[];
+}) {
+  const { content, citationHints, retrieverResources } = props
+
+  // 处理引用提示
+  const processedContent = processContentWithCitations(content, citationHints, retrieverResources)
+
   const latexContent = flow([
     preprocessThinkTag,
     preprocessLaTeX,
-    preprocessHintIcon,
-  ])(props.content)
+  ])(processedContent)
 
   return (
     <div className={cn('markdown-body', '!text-text-primary', props.className)}>
@@ -76,16 +136,16 @@ export function Markdown(props: { content: string; className?: string; customDis
         urlTransform={customUrlTransform}
         disallowedElements={['iframe', 'head', 'html', 'meta', 'link', 'style', 'body', ...(props.customDisallowedElements || [])].filter(el => el !== 'hint-icon')}
         components={{
-          code: CodeBlock,
-          img: Img,
-          video: VideoBlock,
-          audio: AudioBlock,
-          a: Link,
-          p: Paragraph,
-          button: MarkdownButton,
-          form: MarkdownForm,
-          script: ScriptBlock as any,
-          details: ThinkBlock,
+          'code': CodeBlock,
+          'img': Img,
+          'video': VideoBlock,
+          'audio': AudioBlock,
+          'a': Link,
+          'p': Paragraph,
+          'button': MarkdownButton,
+          'form': MarkdownForm,
+          'script': ScriptBlock as any,
+          'details': ThinkBlock,
           'hint-icon': HintIcon,
         }}
       >

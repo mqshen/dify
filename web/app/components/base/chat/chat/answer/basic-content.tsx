@@ -24,6 +24,14 @@ const BasicContent: FC<BasicContentProps> = ({
         item.isError && '!text-[#F04438]',
       )}
       content={content}
+      citationHints={item.citation_hints}
+      retrieverResources={item.citation?.map(citation => ({
+        segment_id: citation.segment_id,
+        document_name: citation.document_name,
+        content: citation.content,
+        score: citation.score,
+        dataset_name: citation.dataset_name,
+      }))}
     />
   )
 }
