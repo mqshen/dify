@@ -669,6 +669,7 @@ class AdvancedChatAppGenerateTaskPipeline:
 
                 # 处理文本并收集引用提示位置信息
                 processed_delta_text = self._process_text_with_citation_metadata(delta_text)
+                
                 self._task_state.answer += processed_delta_text
                 yield self._message_cycle_manager.message_to_stream_response(
                     answer=processed_delta_text,
@@ -833,7 +834,8 @@ class AdvancedChatAppGenerateTaskPipeline:
         检查是否应该添加提示图标，复用'引用和归属'开关
         :return: True if should add hint icons
         """
-        return self._application_generate_entity.app_config.additional_features.show_retrieve_source
+        show_retrieve_source = self._application_generate_entity.app_config.additional_features.show_retrieve_source
+        return show_retrieve_source
 
     def _generate_random_region_size(self) -> int:
         """生成3-5之间的随机区域大小"""
@@ -898,10 +900,6 @@ class AdvancedChatAppGenerateTaskPipeline:
                                   .replace('<', '&lt;')
                                   .replace('>', '&gt;'))
                     remaining_html = f' <hint-icon data-chunks="{chunks_json}"></hint-icon>'
-                    logger.info(
-                        f"最终区域引用提示: 位置({region_start_pos}-{region_end_pos}), "
-                        f"区域大小: {len(self._region_buffer)}, chunks: {[c['segment_id'] for c in chunks_data]}"
-                    )
         
         # 清空区域缓冲区
         self._region_buffer = []
@@ -1005,11 +1003,6 @@ class AdvancedChatAppGenerateTaskPipeline:
         # similarity = weighted_keyword_similarity + weighted_vector_similarity
         hybrid_similarity = (keywords_weight * term_similarity) + (vector_weight * vector_similarity)
 
-        # 调试日志（仅在开发时输出）
-        logger.debug(
-            f"混合相似度计算: term_sim={term_similarity:.3f}, vector_sim={vector_similarity:.3f}, "
-            f"hybrid_sim={hybrid_similarity:.3f}"
-        )
 
         # 确保结果在[0,1]范围内
         return min(1.0, max(0.0, hybrid_similarity))
@@ -1040,10 +1033,6 @@ class AdvancedChatAppGenerateTaskPipeline:
                     vector_weight=VECTOR_SIMILARITY_WEIGHT,  # RAGFlow默认向量权重
                 )
 
-                logger.debug(
-                    f"分块内容: '{resource.content[:30]}...' 混合相似度: {hybrid_similarity:.3f} "
-                    f"(阈值: {threshold}) 是否匹配: {hybrid_similarity >= threshold}"
-                )
 
                 if hybrid_similarity >= threshold:
                     relevant_chunks.append((resource, hybrid_similarity))
@@ -1082,7 +1071,6 @@ class AdvancedChatAppGenerateTaskPipeline:
         # 使用分块的segment_id作为data-chunk-ids
         chunk_ids = [chunk.segment_id for chunk, _ in chunks_with_scores if chunk.segment_id]
         if not chunk_ids:
-            logger.debug("相关分块没有segment_id，不显示图标")
             return ""
 
         # 生成带有详细信息的HTML
@@ -1090,8 +1078,9 @@ class AdvancedChatAppGenerateTaskPipeline:
         # HTML转义以防止XSS
         chunks_json_escaped = html.escape(chunks_json)
 
-        logger.info(f"直接生成图标，chunk_ids: {chunk_ids}, 包含 {len(chunks_data)} 个引用")
-        return f'<hint-icon data-chunk-ids="{",".join(chunk_ids)}" data-chunks="{chunks_json_escaped}"></hint-icon>'
+        hint_html = f'<hint-icon data-chunk-ids="{",".join(chunk_ids)}" data-chunks="{chunks_json_escaped}"></hint-icon>'
+        
+        return hint_html
 
     def _generate_smart_hint_html(self, content: str) -> str:
         """
@@ -1102,22 +1091,17 @@ class AdvancedChatAppGenerateTaskPipeline:
         # 内容长度检查 - 太短的内容不显示图标
         clean_content = self._clean_content_for_similarity(content).strip()
         if len(clean_content) < 10:
-            logger.debug(f"内容太短 ({len(clean_content)}字符)，不显示图标")
             return ""
 
         # 检查是否有检索资源
         retriever_resources = self._task_state.metadata.retriever_resources
-        logger.debug(f"检索资源数量: {len(retriever_resources) if retriever_resources else 0}")
-
+        
         if not retriever_resources:
-            logger.debug("没有检索资源，不显示图标")
             return ""
 
         relevant_chunks_with_scores = self._find_relevant_chunks(content)
-        logger.debug(f"内容: '{content[:50]}...' 找到相关分块: {len(relevant_chunks_with_scores)}")
 
         if not relevant_chunks_with_scores:
-            logger.debug("没有找到相关分块，不显示图标")
             return ""
 
         # 构建增强的数据属性
@@ -1139,7 +1123,6 @@ class AdvancedChatAppGenerateTaskPipeline:
         # 使用分块的segment_id作为data-chunk-ids
         chunk_ids = [chunk.segment_id for chunk, _ in relevant_chunks_with_scores if chunk.segment_id]
         if not chunk_ids:
-            logger.debug("相关分块没有segment_id，不显示图标")
             return ""
 
         # 生成带有详细信息的HTML
@@ -1147,7 +1130,6 @@ class AdvancedChatAppGenerateTaskPipeline:
         # HTML转义以防止XSS
         chunks_json_escaped = html.escape(chunks_json)
 
-        logger.info(f"生成图标，chunk_ids: {chunk_ids}, 包含 {len(chunks_data)} 个引用")
         return f'<hint-icon data-chunk-ids="{",".join(chunk_ids)}" data-chunks="{chunks_json_escaped}"></hint-icon>'
 
     def _process_region_content(self, new_line: str, threshold: float | None = None) -> tuple[str, bool]:
@@ -1167,7 +1149,6 @@ class AdvancedChatAppGenerateTaskPipeline:
         relevant_chunks_with_scores = self._find_relevant_chunks(new_line, threshold)
         if relevant_chunks_with_scores:
             self._region_has_match = True
-            logger.info(f"区域内发现匹配行: '{new_line[:30]}...' 相似度超过阈值 {threshold}")
 
         # 如果区域达到当前指定大小，决定是否显示图标
         if len(self._region_buffer) >= self._current_region_size:
@@ -1185,31 +1166,18 @@ class AdvancedChatAppGenerateTaskPipeline:
                         # 计算这行的最高相似度
                         max_sim = max(score for _, score in line_chunks_with_scores)
 
-                        chunk_count = len(line_chunks_with_scores)
-                        logger.debug(f"第{idx + 1}行: '{line[:30]}...' 找到{chunk_count}个chunks, 相似度{max_sim:.3f}")
-
                         if max_sim > best_similarity:
                             best_similarity = max_sim
                             best_chunks_with_scores = line_chunks_with_scores
-                            chunk_ids = [chunk.segment_id for chunk, _ in line_chunks_with_scores]
-                            logger.debug(f"更新最佳匹配: 相似度{max_sim:.3f}, chunks: {chunk_ids}")
 
                 if best_chunks_with_scores:
                     # 直接使用找到的最佳chunks生成HTML标记
                     hint_html = self._generate_hint_html_from_chunks(best_chunks_with_scores)
                     if hint_html:
-                        logger.info(
-                            f"区域累积显示图标: 区域大小={len(self._region_buffer)}, "
-                            f"最佳相似度={best_similarity:.3f}, chunk数量={len(best_chunks_with_scores)}"
-                        )
                         self._reset_region_buffer()
                         return new_line + f" {hint_html}", True
 
             # 区域结束，无论是否显示图标都要重置
-            logger.info(
-                f"区域结束: 大小={len(self._region_buffer)}, "
-                f"有匹配={self._region_has_match}, 显示图标={should_show_icon}"
-            )
             self._reset_region_buffer()
 
         return new_line, False
@@ -1294,7 +1262,6 @@ class AdvancedChatAppGenerateTaskPipeline:
         :param delta_text: 增量文本
         :return: 处理后的文本
         """
-        logger.debug(f"提示图标处理: delta_text='{delta_text[:50]}...' should_add={self._should_add_hint_icons()}")
 
         if not self._should_add_hint_icons():
             return delta_text
@@ -1347,7 +1314,6 @@ class AdvancedChatAppGenerateTaskPipeline:
 
                         # 处理当前普通行 - 使用区域累积显示策略
                         if combined_line.strip() and not self._is_simple_code_line(combined_line):
-                            logger.info(f"调用区域处理: '{combined_line.strip()[:30]}...'")
                             # 使用区域累积显示策略
                             processed_line, icon_added = self._process_region_content(combined_line.strip())
                             if icon_added:
@@ -1447,12 +1413,6 @@ class AdvancedChatAppGenerateTaskPipeline:
                                         
                                         if hint_data["chunk_ids"]:
                                             self._citation_hints.append(hint_data)
-                                            logger.info(
-                                                f"区域引用提示: 位置({region_start_pos}-{region_end_pos}), "
-                                                f"区域大小: {len(self._region_buffer)}, "
-                                                f"chunks: {hint_data['chunk_ids']}, "
-                                                f"相似度: {hint_data['confidence']:.3f}"
-                                            )
                                             
                                             # 直接在文本中插入引用提示标记
                                             # 使用retriever_resources中的数据构建chunks数据
@@ -1482,9 +1442,10 @@ class AdvancedChatAppGenerateTaskPipeline:
                                                               .replace('>', '&gt;'))
                                                 # 在当前位置插入hint-icon标记
                                                 processed_text = processed_text.rstrip()  # 移除末尾空白
-                                                processed_text += (
-                                                    f' <hint-icon data-chunks="{chunks_json}"></hint-icon>\n'
-                                                )
+                                                hint_icon_tag = f' <hint-icon data-chunks="{chunks_json}"></hint-icon>\n'
+                                                processed_text += hint_icon_tag
+                                                
+                                                logger.info(f"流式插入的hint-icon HTML: {hint_icon_tag.strip()}")
                                 
                                 # 重置区域缓冲区
                                 self._reset_region_buffer()
