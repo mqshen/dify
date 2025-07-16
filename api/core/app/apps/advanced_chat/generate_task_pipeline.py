@@ -1078,7 +1078,10 @@ class AdvancedChatAppGenerateTaskPipeline:
         # HTML转义以防止XSS
         chunks_json_escaped = html.escape(chunks_json)
 
-        hint_html = f'<hint-icon data-chunk-ids="{",".join(chunk_ids)}" data-chunks="{chunks_json_escaped}"></hint-icon>'
+        hint_html = (
+            f'<hint-icon data-chunk-ids="{",".join(chunk_ids)}" '
+            f'data-chunks="{chunks_json_escaped}"></hint-icon>'
+        )
         
         return hint_html
 
@@ -1442,7 +1445,9 @@ class AdvancedChatAppGenerateTaskPipeline:
                                                               .replace('>', '&gt;'))
                                                 # 在当前位置插入hint-icon标记
                                                 processed_text = processed_text.rstrip()  # 移除末尾空白
-                                                hint_icon_tag = f' <hint-icon data-chunks="{chunks_json}"></hint-icon>\n'
+                                                hint_icon_tag = (
+                                                    f' <hint-icon data-chunks="{chunks_json}"></hint-icon>\n'
+                                                )
                                                 processed_text += hint_icon_tag
                                                 
                                                 logger.info(f"流式插入的hint-icon HTML: {hint_icon_tag.strip()}")
