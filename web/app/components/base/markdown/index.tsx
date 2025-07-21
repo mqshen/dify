@@ -20,6 +20,7 @@ import {
   ThinkBlock,
   VideoBlock,
 } from '@/app/components/base/markdown-blocks'
+import HintIcon from '@/app/components/base/chat/chat/answer/hint-icon'
 
 /**
  * @fileoverview Main Markdown rendering component.
@@ -29,11 +30,41 @@ import {
  * are noted in their respective files if applicable.
  */
 
-export function Markdown(props: { content: string; className?: string; customDisallowedElements?: string[] }) {
+// 引用提示数据类型定义
+type CitationHint = {
+  text_range: { start: number; end: number }
+  chunk_ids: string[]
+  confidence: number
+}
+
+type RetrieverResource = {
+  segment_id: string
+  document_name: string
+  content: string
+  score: number
+  dataset_name?: string
+}
+
+// 预处理 hint-icon 标签确保正确解析
+const preprocessHintIcon = (content: string) => {
+  // 确保 hint-icon 标签格式正确
+  return content.replace(/<hint-icon([^>]*)><\/hint-icon>/g, '<hint-icon$1></hint-icon>')
+}
+
+export function Markdown(props: {
+  content: string;
+  className?: string;
+  customDisallowedElements?: string[];
+  citationHints?: CitationHint[];
+  retrieverResources?: RetrieverResource[];
+}) {
+  const { content } = props
+
   const latexContent = flow([
     preprocessThinkTag,
     preprocessLaTeX,
-  ])(props.content)
+    preprocessHintIcon,
+  ])(content)
 
   return (
     <div className={cn('markdown-body', '!text-text-primary', props.className)}>
@@ -53,7 +84,7 @@ export function Markdown(props: { content: string; className?: string; customDis
                 if (node.type === 'element' && node.properties?.ref)
                   delete node.properties.ref
 
-                if (node.type === 'element' && !/^[a-z][a-z0-9]*$/i.test(node.tagName)) {
+                if (node.type === 'element' && !/^[a-z][a-z0-9-]*$/i.test(node.tagName) && node.tagName !== 'hint-icon') {
                   node.type = 'text'
                   node.value = `<${node.tagName}`
                 }
@@ -66,18 +97,19 @@ export function Markdown(props: { content: string; className?: string; customDis
           },
         ]}
         urlTransform={customUrlTransform}
-        disallowedElements={['iframe', 'head', 'html', 'meta', 'link', 'style', 'body', ...(props.customDisallowedElements || [])]}
+        disallowedElements={['iframe', 'head', 'html', 'meta', 'link', 'style', 'body', ...(props.customDisallowedElements || [])].filter(el => el !== 'hint-icon')}
         components={{
-          code: CodeBlock,
-          img: Img,
-          video: VideoBlock,
-          audio: AudioBlock,
-          a: Link,
-          p: Paragraph,
-          button: MarkdownButton,
-          form: MarkdownForm,
-          script: ScriptBlock as any,
-          details: ThinkBlock,
+          'code': CodeBlock,
+          'img': Img,
+          'video': VideoBlock,
+          'audio': AudioBlock,
+          'a': Link,
+          'p': Paragraph,
+          'button': MarkdownButton,
+          'form': MarkdownForm,
+          'script': ScriptBlock as any,
+          'details': ThinkBlock,
+          'hint-icon': HintIcon,
         }}
       >
         {/* Markdown detect has problem. */}

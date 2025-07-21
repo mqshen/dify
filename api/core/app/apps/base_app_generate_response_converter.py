@@ -81,6 +81,9 @@ class AppGenerateResponseConverter(ABC):
                 )
             metadata["retriever_resources"] = updated_resources
 
+        # show citation_hints (keep unchanged for frontend processing)
+        # citation_hints数据保持原样传递给前端
+
         # show annotation reply
         if "annotation_reply" in metadata:
             del metadata["annotation_reply"]

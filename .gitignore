@@ -217,15 +217,9 @@ mise.toml
 .env.development
 .env.product
 api/.env.backup
-jojo/.env.hybrid
-jojo/backend-modifications-summary.md
-jojo/backend-start.sh
-jojo/backend-stop.sh
-jojo/frontend-modifications-summary.md
-jojo/frontend-start.sh
-jojo/frontend-stop.sh
-jojo/middleware-start.sh
-jojo/middleware-stop.sh
-jojo/revert_format_only_changes.sh
-jojo/test_citation_hints.py
+
+# jojo directory with scripts and configurations
+jojo/
+
+# Claude Code configuration file
 CLAUDE.md

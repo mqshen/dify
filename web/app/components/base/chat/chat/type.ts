@@ -48,6 +48,12 @@ export type ThoughtItem = {
   message_files?: FileEntity[]
 }
 
+export type CitationHint = {
+  text_range: { start: number; end: number }
+  chunk_ids: string[]
+  confidence: number
+}
+
 export type CitationItem = {
   content: string
   data_source_type: string
@@ -67,6 +73,7 @@ export type IChatItem = {
   id: string
   content: string
   citation?: CitationItem[]
+  citation_hints?: CitationHint[]
   /**
    * Specific message type
    */
@@ -107,6 +114,7 @@ export type IChatItem = {
 
 export type Metadata = {
   retriever_resources?: CitationItem[]
+  citation_hints?: CitationHint[]
   annotation_reply: {
     id: string
     account: {
