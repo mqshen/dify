@@ -2,6 +2,7 @@
 
 import Loading from "@/app/components/base/loading";
 import Button from "@/app/components/base/button";
+import Input from '@/app/components/base/input'
 import Word from "@/app/components/reports/Word";
 import { RiCloseLine } from "@remixicon/react";
 import type { ValueSelector} from "@/app/components/workflow/types";
@@ -71,9 +72,14 @@ export default function ReportWordEdit({
             >
               <RiCloseLine className="h-5 w-5" />
             </Button>
-            <div className="system-2xs-medium-uppercase mt-1 text-text-tertiary">
+            {/* <div className="system-2xs-medium-uppercase mt-1 text-text-tertiary">
               ESC
-            </div>
+            </div> */}
+            <Input
+              value=""
+              autoFocus={true}
+              className="hidden"
+            />
           </div>
         </div>
         <div className="bg-accent size-full flex justify-center items-center">
