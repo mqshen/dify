@@ -33,7 +33,7 @@ export default function ReportWordEdit({
   // inset var
   const iframeRef = useRef<HTMLElement>(null);
   const handleInset = (value: ValueSelector) => {
-    const variableName = typeof value === 'string' ? value : value.join('.')
+    const variableName = 'report_' + (typeof value === 'string' ? value : value.join('_'))
     onAddVariable(variableName, value)
     if (!iframeRef.current) return;
     const iframeDom = iframeRef.current.querySelector("iframe");
