@@ -34,6 +34,11 @@ class MessageListApi(Resource):
             if obj.message_metadata
             else []
         ),
+        "citation_hints": fields.Raw(
+            attribute=lambda obj: json.loads(obj.message_metadata).get("citation_hints", [])
+            if obj.message_metadata
+            else []
+        ),
         "created_at": TimestampField,
         "agent_thoughts": fields.List(fields.Nested(agent_thought_fields)),
         "status": fields.String,

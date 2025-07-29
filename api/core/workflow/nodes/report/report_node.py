@@ -12,6 +12,7 @@ from extensions.ext_database import db
 from extensions.ext_storage import storage
 from models import Report
 
+
 class ReportNotExistError(Exception):
     pass
 
@@ -92,16 +93,16 @@ class ReportNode(BaseNode[ReportNodeData]):
 
         return available_reports
 
-if __name__ == '__main__':
-    variables = {'tt': 'ede59869-d180-460e-be42-81db6bcc1c8a', 'ssdf2': 'e25e166e-7be7-48e0-9c05-56b7663b22ca'}
-    doc_parse = DocxTemplateRender(filepath="/Users/goldratio/Desktop/ai_agent/2. 信贷报告/1751588667860_temp.docx")
-    output_doc = doc_parse.render(variables)
-    output_content = io.BytesIO()
-    output_doc.save(output_content)
-    output_content.seek(0)
-
-    # minio的临时目录
-    tmp_object_name = "test.docx"
-    # upload file to minio
-    with open(tmp_object_name, "wb") as file:
-        file.write(output_content.read())
+# if __name__ == '__main__':
+#     variables = {'tt': 'ede59869-d180-460e-be42-81db6bcc1c8a', 'ssdf2': 'e25e166e-7be7-48e0-9c05-56b7663b22ca'}
+#     doc_parse = DocxTemplateRender(filepath="/Users/goldratio/Desktop/ai_agent/2. 信贷报告/1751588667860_temp.docx")
+#     output_doc = doc_parse.render(variables)
+#     output_content = io.BytesIO()
+#     output_doc.save(output_content)
+#     output_content.seek(0)
+#
+#     # minio的临时目录
+#     tmp_object_name = "test.docx"
+#     # upload file to minio
+#     with open(tmp_object_name, "wb") as file:
+#         file.write(output_content.read())

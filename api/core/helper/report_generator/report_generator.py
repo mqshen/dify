@@ -1,6 +1,5 @@
 
 from typing import IO
-# from docx import Document
 from docxtpl import DocxTemplate
 
 def find_lcs(str1, str2):

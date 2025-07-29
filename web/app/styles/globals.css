@@ -1,11 +1,13 @@
 @import "preflight.css";
-@tailwind base;
-@tailwind components;
-
+@import "../components/base/button/index.css";
+@import "../components/base/action-button/index.css";
+@import "../components/base/modal/index.css";
 @import '../../themes/light.css';
 @import '../../themes/dark.css';
 @import "../../themes/manual-light.css";
 @import "../../themes/manual-dark.css";
+@tailwind base;
+@tailwind components;
 
 html {
   color-scheme: light;
@@ -680,10 +682,6 @@ button:focus-within {
   display: none;
 }
 
-@import "../components/base/button/index.css";
-@import "../components/base/action-button/index.css";
-@import "../components/base/modal/index.css";
-
 @tailwind utilities;
 
 @layer utilities {
@@ -707,5 +705,29 @@ button:focus-within {
 
   .no-spinner {
     -moz-appearance: textfield;
+  }
+
+  /* Hint Icon Styles */
+  .hint-icon {
+    transition: transform 0.2s ease-in-out;
+  }
+
+  .hint-icon:hover {
+    transform: scale(1.1);
+  }
+
+  .hint-tooltip {
+    animation: fadeIn 0.2s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateX(-50%) translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
   }
 }

@@ -54,6 +54,7 @@ const LocaleLayout = async ({
   return (
     <html lang={locale ?? 'en'} className="h-full" suppressHydrationWarning>
       <head>
+        <meta charSet="utf-8" />
         <meta name="theme-color" content="#FFFFFF" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
