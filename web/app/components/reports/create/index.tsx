@@ -43,7 +43,7 @@ export default function ReportWordEdit({
       JSON.stringify({
         type: "onExternalPluginMessage",
         action: "insetMarker",
-        data: variableName,
+        data: ` ${variableName} `,
       }),
       "*"
     );
