@@ -62,8 +62,7 @@ ENV PATH="${VIRTUAL_ENV}/bin:${PATH}"
 # Download nltk data
 # RUN python -c "import nltk; nltk.download('punkt'); nltk.download('averaged_perceptron_tagger')"
 # copy local nltk
-COPY /root/nltk_data /root/
-#RUN python -c "import nltk; nltk.download('punkt'); nltk.download('averaged_perceptron_tagger')"
+COPY ./nltk_data /root/
 
 ENV TIKTOKEN_CACHE_DIR=/app/api/.tiktoken_cache
 
